@@ -1,0 +1,10 @@
+Over rate: 15
+Lunch: 40 min
+Tea: 20 min
+Inning break: 10 min (INCLUDING 50+ OVERS)
+Each ball is 40s
+
+Recommended increment: 40s.
+
+While official limit is 06:30 hrs for test, this is a simulation. Our limit is 08:00 hrs hence.
+The actual time taken for all games adhered to the official limits.
