@@ -1,0 +1,41 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Sleek Charcoal Gradient for depth -->
+      <radialGradient id="pantherGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" style="stop-color:#2c2c2c" />
+        <stop offset="100%" style="stop-color:#0a0a0a" />
+      </radialGradient>
+    </defs>
+  
+    <!-- Muscular Head & Jaw Structure -->
+    <path d="M200,80 
+             C140,80 90,120 90,200 
+             C90,280 120,340 200,340 
+             C280,340 310,280 310,200 
+             C310,120 260,80 200,80 Z" 
+          fill="url(#pantherGrad)" />
+  
+    <!-- Small, Rounded Ears (Tucked for stalking profile) -->
+    <path d="M120,120 Q80,70 140,95 Z" fill="#0a0a0a" stroke="#1a1a1a" stroke-width="2" />
+    <path d="M280,120 Q320,70 260,95 Z" fill="#0a0a0a" stroke="#1a1a1a" stroke-width="2" />
+  
+    <!-- Intense Panther Eyes (Almond shape with round pupils) -->
+    <g id="panther_eyes">
+      <!-- Left Eye -->
+      <path d="M140,190 Q160,175 180,190 Q160,205 140,190" fill="#000" /> <!-- Black orbit -->
+      <path d="M145,190 Q160,178 175,190 Q160,200 145,190" fill="#e6b800" /> <!-- Golden Iris -->
+      <circle cx="160" cy="189" r="4" fill="#000" /> <!-- Round Pupil -->
+      
+      <!-- Right Eye -->
+      <path d="M220,190 Q240,175 260,190 Q240,205 220,190" fill="#000" />
+      <path d="M225,190 Q240,178 255,190 Q240,200 225,190" fill="#e6b800" />
+      <circle cx="240" cy="189" r="4" fill="#000" />
+    </g>
+  
+    <!-- Powerful Muzzle & Broad Nose -->
+    <path d="M165,240 Q200,225 235,240 L225,290 Q200,310 175,290 Z" fill="#111" />
+    <path d="M185,280 Q200,295 215,280" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round" /> <!-- Nose Pad -->
+  
+    <!-- Strong Jaw/Mouth Line -->
+    <path d="M160,305 Q200,320 240,305" stroke="#1a1a1a" stroke-width="2" fill="none" />
+</svg>

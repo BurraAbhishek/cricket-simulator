@@ -1,0 +1,370 @@
+@font-face {
+    font-family: NotoSans;
+    src: local('NotoSans'), url('/static/font/noto_sans/NotoSans.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: Roboto;
+    src: local('Roboto'), url('/static/font/roboto/Roboto.ttf') format('truetype');
+}
+body {
+    font-family: NotoSans, Roboto, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+        sans-serif;
+    padding: 1% 1%;
+    background-color: #212121;
+    color: #bababa
+}
+
+.navbar {
+    display: flex;
+    min-width: 90vw;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.active {
+    color: #0a0;
+}
+
+.inactive {
+    color: #f00;
+}
+
+h1 {
+    border-bottom: 2px solid gray;
+}
+
+img {
+    max-width: 80vw;
+}
+
+table,
+th,
+td {
+    border: 1px solid black;
+}
+
+table {
+    margin: 1% 1%;
+    width: 96%;
+    overflow: scroll;
+}
+
+th,
+td {
+    padding: 1% 1%;
+    text-align: center;
+    font-size: 1.3em;
+}
+
+.summary-text {
+    font-size: 1.25em;
+}
+
+.summary-text-commentary {
+    font-size: 1.5em;
+    padding: 2vh 2vw;
+    min-width: 90vw;
+    max-width: 90vw;
+    text-align: left;
+}
+
+.inappropriate-name {
+    color: black;
+}
+
+.match-summary-box {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 90vw;
+    font-size: 1.25em;
+    padding: 1% 2%;
+    margin: 0.5% 0.5%;
+    background-color: #333333;
+    color: inherit;
+    text-decoration: none;
+}
+
+.match-summary {
+    width: 99%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5% 0.5%;
+    flex-grow: 1;
+}
+
+.match-summary-left,
+.match-summary-right {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.over-summary-left,
+.over-summary-right {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 4%;
+}
+
+.match-summary-left {
+    align-items: center;
+    justify-content: start;
+}
+
+.over-summary-left {
+    align-items: flex-start;
+}
+
+.match-summary-right {
+    align-items: center;
+    justify-content: end;
+}
+
+.over-summary-right {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.match-summary-team {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    text-align: center;
+    align-items: center;
+    font-size: 1.5em;
+}
+
+.match-summary-termination {
+    min-width: 4vw;
+    text-align: center;
+    font-size: 1.25em;
+}
+
+.match-summary-rating {
+    min-width: 4vw;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 375;
+    color: #333;
+}
+
+.match-summary-score {
+    position: relative;
+    padding: 0 1%;
+    text-align: center;
+    font-size: 1.8em;
+}
+
+.match-summary-insights {
+    display: none;
+    position: absolute;
+    top: 95%;
+    left: -25px;
+    font-size: 0.6em;
+    width: 200px;
+}
+
+.match-summary-score:hover .match-summary-insights{
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.belligerent-list {
+    table-layout: fixed;
+}
+
+.game-won {
+    color: #008800;
+}
+
+.game-lost {
+    color: #ff0000;
+}
+
+.game-draw {
+    color: #555555;
+}
+
+.result-tiebreak {
+    padding: 0;
+}
+
+.final-standing-td {
+    font-size: 2em;
+}
+
+.match-commentary-box {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    width: 86vw;
+    font-size: 1.25em;
+    padding: 1% 2%;
+    margin: 0.5% 0.5%;
+    background-color: #333333;
+    color: inherit;
+    text-decoration: none;
+}
+
+.commentary-ball-outcome {
+    min-width: 4vw;
+    width: fit-content;
+    height: 4vw;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.35em;
+    color: #ffffff;
+}
+
+.commentary-ball-comment {
+    margin-left: 2vw;
+    display: flex;
+    align-items: center;
+}
+
+.commentary-milestone-outer-box {
+    border: 1px solid #ddd;
+    padding: 1vh 1vw;
+    margin: 1vh 0;
+    min-width: 90vw;
+}
+
+.commentary-milestone-inner-box {
+    width: 86vw;
+    font-size: 1.25em;
+    padding: 1% 2%;
+    margin: 0.5% 0.5%;
+    border: 1px solid #777;
+    display: flex;
+    justify-content: space-between;
+}
+
+.commentary-milestone-team-flag-container {
+    border: 1px solid #f5f5f5;
+    width: 160px;
+    height: 80px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.commentary-milestone-partner {
+    min-width: 240px;
+    height: 120px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.commentary-milestone-text {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.commentary-milestone-team-flag {
+    max-height: 72px;
+}
+
+.commentary-milestone-avatar {
+    max-height: 108px;
+}
+
+.six {
+    background-color: #00a0d0;
+}
+
+.four {
+    background-color: #008800;
+}
+
+.out {
+    background-color: #ff0000;
+}
+
+.extra {
+    background-color: #ffff00;
+    color: #333333;
+    font-size: 1.2em;
+}
+
+.runs {
+    background-color: #dddddd;
+    color: #555555;
+}
+
+#main-commentary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.over-summary-player {
+    min-width: 4vw;
+    font-size: 1.25em;
+    float: left;
+}
+
+.over-summary-pscore {
+    min-width: 4vw;
+    font-size: 1.25em;
+    float: right;
+}
+
+.over-player-stats {
+    width: 35vw;
+}
+
+.match-summary-termination-result {
+    min-width: 32vw;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.centered-image {
+    width: 100%;
+    text-align: center;
+}
+
+.inline-flag {
+    max-height: 90%;
+}
+
+.flag-container {
+    width: 160px;
+    height: 80px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.match-summary-scoreboard {
+    padding: 0 1vw;
+    width: 150px;
+}
+
+.rating-player-title {
+    color: #bf811d;
+    font-weight: 700;
+}
+
+.rating-bot-title {
+    color: #ff00ff;
+    font-weight: 700;
+}

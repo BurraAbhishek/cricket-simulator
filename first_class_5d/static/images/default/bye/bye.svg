@@ -1,0 +1,43 @@
+<svg
+    width="400"
+    height="240"
+    viewBox="0 0 200 120"
+    xmlns="http://www.w3.org/2000/svg"
+>
+    <defs>
+        <pattern
+            id="checkerpattern"
+            x="0"
+            y="0"
+            width="20"
+            height="20"
+            patternUnits="userSpaceOnUse"
+        >
+            <rect width="10" height="10" fill="#eee" />
+            <rect x="10" y="10" width="10" height="10" fill="#eee" />
+            <rect x="10" width="10" height="10" fill="#111" />
+            <rect y="10" width="10" height="10" fill="#111" />
+        </pattern>
+    </defs>
+    <path
+        d="M40 20 H120 L160 60 L120 100 H40 L80 60 Z"
+        fill="url(#checkerpattern)"
+        stroke="black"
+        stroke-width="2"
+    />
+    <text
+        x="111"
+        y="68"
+        font-family="monospace"
+        font-size="32"
+        font-weight="bold"
+        fill="#ffd700"
+        text-anchor="middle"
+        stroke="black"
+        stroke-width="5"
+        paint-order="stroke"
+        letter-spacing="1.1"
+    >
+        BYE
+    </text>
+</svg>

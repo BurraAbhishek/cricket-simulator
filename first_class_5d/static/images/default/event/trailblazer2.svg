@@ -1,0 +1,12 @@
+<svg width="400" height="400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Main Arrow Head -->
+    <path d="M20 70 L50 20 L80 70 L50 60 Z" fill="#bc7f7f" />
+    
+    <!-- Trail/Speed Lines -->
+    <line x1="50" y1="20" x2="50" y2="0" stroke="#eeafba" stroke-width="4" stroke-linecap="round" />
+    <line x1="30" y1="50" x2="10" y2="40" stroke="#eeafba" stroke-width="3" stroke-linecap="round" />
+    <line x1="70" y1="50" x2="90" y2="40" stroke="#eeafba" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Outer Outline for definition -->
+    <path d="M20 70 L50 20 L80 70 L50 60 Z" stroke="#4c0f0f" stroke-width="2" fill="none" />
+  </svg>

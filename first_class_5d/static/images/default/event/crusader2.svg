@@ -1,0 +1,20 @@
+<svg width="400" height="400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">  
+    <!-- 1. The Cape/Shoulders (Gives Bulk) -->
+    <path d="M20 40 L50 30 L80 40 L85 90 L15 90 Z" fill="#bc7f7f" stroke="black" stroke-width="1" />
+    
+    <!-- 2. The Surcoat (White cloth with Red Cross) -->
+    <path d="M35 40 L65 40 L60 90 L40 90 Z" fill="#eeafba" />
+    <path d="M47 40 L53 40 L53 90 L47 90 M35 55 L65 55 L65 61 L35 61" fill="#c0392b" />
+  
+    <!-- 3. The Kite Shield (Held to the side) -->
+    <path d="M15 45 Q15 85 40 95 Q65 85 65 45 Z" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="2" />
+    <path d="M40 45 L40 95 M15 60 L65 60" stroke="#c0392b" stroke-width="4" fill="none" />
+  
+    <!-- 4. The Great Helm -->
+    <rect x="40" y="10" width="20" height="25" rx="2" fill="#95a5a6" />
+    <path d="M50 10 L50 35 M40 20 L60 20" stroke="#c0392b" stroke-width="3" /> 
+
+    <!-- 5. Sword (Peeking over shoulder) -->
+    <rect x="68" y="22" width="4" height="68" fill="#7f8c8d" />
+    <rect x="62" y="28" width="16" height="4" fill="#7f8c2d" />
+</svg>
