@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+                text-decoration: none;
+            }
+            #avatar-container {
+                width: 95vw;
+                display: flex;
+                justify-content: center;
+            }
+            table {
+                table-layout: fixed;
+            }
+            .rating {
+                font-size: 1.25em;
+            }
+            img {
+                max-height: 40vh;
+                width: auto;
+            }
+            .batting-header {
+                display: flex;
+                font-size: 1.3em;
+                font-weight: 700;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .player-stat-body {
+                display: flex;
+                font-size: 1.2em;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .player-stat-name {
+                width: 40vw;
+                text-align: left;
+            }
+            .player-stat-insight {
+                width: 10vw;
+                text-align: center;
+            }
+            .player-stat-status {
+                width: 90vw;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+                padding-top: 0.5vh;
+                padding-bottom: 1vh;
+                font-size: 1.1em;
+            }
+            .player-stat-dismissal {
+                width: 90vw;
+                text-align: left;
+                font-size: 1em;
+            }
+            .stat-hr {
+                color: #999;
+                width: 95vw;
+            }
+            .win {
+                color: #00cc00;
+            }
+            .loss {
+                color: #ff4444;
+            }
+            .tie,
+            .draw {
+                color: #cccc33;
+            }
+            a {
+                color: inherit;
+            }
+            .main-title {
+                border-bottom: none;
+                margin-bottom: 1vh;
+            }
+            .main-description {
+                text-align: center;
+                font-size: 2em;
+                margin-top: 1vh;
+                margin-bottom: 1vh;
+            }
+            .sub-description {
+                text-align: center;
+                font-size: 1.5em;
+                margin-top: 1vh;
+                margin-bottom: 1vh;
+            }
+        </style>
+        <title>{{ player_name }} | {{ player_team }}</title>
+    </head>
+    <body>
+        <div class="summary-text" id="avatar-container">
+            <img src="{% static player_avatar %}" alt="Player image" />
+        </div>
+        <h1 class="main-title" id="player-name">
+            {% if player_title.id == "BOT" %}
+            <span class="rating-bot-title">BOT</span>
+            {% elif player_title.name != "" %}
+            <span class="rating-player-title">{{ player_title.id }}</span>
+            {% endif %}
+            {{ player_name }}
+        </h1>
+        {% if player_description is not None %}
+        <h2 class="main-description" id="player-description">
+            {{ player_description }}
+        </h2>
+        {% endif %}
+        {% if extended_player_description is not None %}
+        <div class="summary-text sub-description">
+            {{ extended_player_description|linebreaksbr }}
+        </div>
+        {% endif %}
+        <hr />
+        <div class="summary-text">
+            <table id="team-details">
+                <tr>
+                    <th>Team</th>
+                    <td>
+                        <a href="/team/{{ player_team_id }}">
+                            {{ player_team }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Player ID</th>
+                    <td>{{ player_id }}</td>
+                </tr>
+                {% if player_title.name != "" %}
+                <tr>
+                    <th>Title</th>
+                    <td>{{ player_title.name }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+        <h2>Rating</h2>
+        <div class="summary-text">
+            <table>
+                <tr>
+                    <td>
+                        batting
+                        <b class="rating">{{ batting_rating }}</b>
+                    </td>
+                    <td>
+                        bowling
+                        <b class="rating">{{ bowling_rating }}</b>
+                    </td>
+                    <td>
+                        fielding
+                        <b class="rating">{{ fielding_rating }}</b>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <h1>Batting Performance</h1>
+        <div class="summary-text">
+            <div class="batting-header">
+                <div class="player-stat-name">Match</div>
+                <div class="player-stat-insight">Runs</div>
+                <div class="player-stat-insight">Balls</div>
+                <div class="player-stat-insight">4s</div>
+                <div class="player-stat-insight">6s</div>
+                <div class="player-stat-insight">Strike Rate</div>
+            </div>
+            <hr class="stat-hr"/>
+            <div class="batting-stats">
+                {% for i in bat %}
+                <div class="player-stat-body">
+                    <div class="player-stat-name">
+                        vs.
+                        <a href="/team/{{ i.opponent }}">{{ i.opponent_name }}</a>
+                    </div>
+                    <div class="player-stat-insight">
+                        {{ i.runs }}{% if not i.dismissed %}*{% endif %}
+                    </div>
+                    <div class="player-stat-insight">{{ i.balls }}</div>
+                    <div class="player-stat-insight">{{ i.fours }}</div>
+                    <div class="player-stat-insight">{{ i.sixes }}</div>
+                    <div class="player-stat-insight">
+                        {% if i.balls > 0 or i.dismissed %}
+                        {{ i.strike_rate|floatformat:1 }}
+                        {% else %}
+                        <span>-</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="player-stat-status {{ i.result_class }}">
+                    <a href="{{ i.match_link }}">{{ i.match_name }}</a>,
+                    {{ i.innings_position }}
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+            </div>
+        </div>
+        <h1>Bowling Performance</h1>
+        <div class="summary-text">
+            <div class="batting-header">
+                <div class="player-stat-name">Match</div>
+                <div class="player-stat-insight">Overs</div>
+                <div class="player-stat-insight">Maidens</div>
+                <div class="player-stat-insight">Runs</div>
+                <div class="player-stat-insight">Wickets</div>
+                <div class="player-stat-insight">Economy</div>
+            </div>
+            <hr class="stat-hr"/>
+            <div class="batting-stats">
+                {% for i in bowl %}
+                <div class="player-stat-body">
+                    <div class="player-stat-name">
+                        vs.
+                        <a href="/team/{{ i.opponent }}">{{ i.opponent_name }}</a>
+                    </div>
+                    <div class="player-stat-insight">{{ i.overs }}</div>
+                    <div class="player-stat-insight">{{ i.maidens }}</div>
+                    <div class="player-stat-insight">{{ i.runs }}</div>
+                    <div class="player-stat-insight">{{ i.wickets }}</div>
+                    <div class="player-stat-insight">
+                        {% if i.bowled %}
+                        {{ i.economy|floatformat:1 }}
+                        {% else %}
+                        <span>-</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="player-stat-status {{ i.result_class }}">
+                    <a href="{{ i.match_link }}">{{ i.match_name }}</a>,
+                    {{ i.innings_position }}
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+            }
+            #avatar-container {
+                width: 95vw;
+                display: flex;
+                justify-content: center;
+            }
+            .rating {
+                font-size: 1.25em;
+            }
+            img {
+                max-height: 40vh;
+                width: auto;
+            }
+            #member-names {
+                font-size: 1.5em;
+            }
+            .cheater-visual {
+                width: 80vw;
+                height: 5vh;
+                display: inline-block;
+                position: relative;
+                border: 2px solid orange;
+                margin: 2vh 2vw;
+            }
+            .white-component {
+                position: absolute;
+                left: 0;
+                background-color: antiquewhite;
+                width: 40vw;
+                height: 5vh;
+                display: inline-block;
+            }
+            .black-component {
+                position: absolute;
+                right: 0;
+                background-color: black;
+                width: 40vw;
+                height: 5vh;
+                display: inline-block;
+            }
+            .zero-component {
+                position: absolute;
+                left: 39.95vw;
+                background-color: brown;
+                border: 1px solid orange;
+                width: 0.1vw;
+                height: 5vh;
+                display: inline-block;
+            }
+            .hidden-details {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                width: 80vw;
+                margin: 0 2vw;
+            }
+            .match-summary-left,
+            .match-summary-right {
+                padding: 0 1vw;
+                width: 38vw;
+            }
+        </style>
+        <title>Live Games</title>
+    </head>
+    <body>
+        <h1 class="main-title" id="player-name">
+            <a href="/simul/previous">&lt;</a>
+            Live Feed ({{ clock }})
+            <a href="/simul/next">&gt;</a>
+        </h1>
+        <div class="summary-text">
+            {% for i in data %}
+                <div class="match-summary-box">
+                    <div class="cheater-device">
+                        {{ i.eval.eval_verbose }} • {{ i.engine_name }} • {{ i.name }} • {{ i.status }}
+                    </div>
+                    <div class="cheater-visual">
+                        <span class="white-component" style="width: {{ i.eval.white_width }}"></span>
+                        <span class="black-component" style="width: {{ i.eval.black_width }}"></span>
+                        <span class="zero-component"></span>
+                    </div>
+                    <div class="hidden-details">
+                        <div class="match-summary-left">
+                            <div>{{ i.data.0.bat }}</div>
+                            <div>
+                                <span>{{ i.data.0.score }}</span>/<span>{{ i.data.0.wickets }}</span>
+                                (<span>{{ i.data.0.balls }}</span> 
+                                ball{% if i.data.0.balls != 1 %}s{% endif %})
+                            </div>
+                        </div>
+                        <div class="match-summary-right">
+                            <div>{{ i.data.1.bat }}</div>
+                            <div>
+                                <span>{{ i.data.1.score }}</span>/<span>{{ i.data.1.wickets }}</span>
+                                (<span>{{ i.data.1.balls }}</span> 
+                                ball{% if i.data.1.balls != 1 %}s{% endif %})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if True %}
+        <script>
+            setTimeout(
+                function () {
+                    window.location.href="/simul/next"
+                }, 40000
+            )
+        </script>
+        {% endif %}
+    </body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+        <script src="{% static 'chartjs/Chart_294.min.js' %}"></script>
+        <style>
+            th,
+            td {
+                font-size: 1.2em;
+            }
+
+            .match-summary-box {
+                background-color: #101010;
+                border: 2px solid #333
+            }
+
+            .brief-summary {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .brief-summary-content {
+                font-weight: 400;
+            }
+
+            .innings-button {
+                width: 40vw;
+                font-size: 1.35em;
+                text-align: center;
+                background-color: #3b2d34;
+                color: #bababa;
+                border: none;
+                margin: 1% 1%;
+                padding: 1% 1%;
+            }
+
+            .partnership-name {
+                font-size: 2.5em;
+                font-weight: 400;
+                text-align: center;
+                padding-top: 1vh;
+                padding-bottom: 1vh;
+                width: 100%;
+            }
+
+            .partnership-element,
+            .partnership-element2 {
+                display: flex;
+                font-size: 1.35em;
+            }
+
+            .partnership-element div {
+                padding-left: 0.5vw;
+                padding-right: 0.5vw;
+            }
+        </style>
+    </head>
+    <body>
+        {% include "score_main.html" %}
+        <hr />
+        <div>
+            <canvas id="wormGraph"></canvas>
+        </div>
+        {{ worm_labels|json_script:"worm-labels-script" }}
+        {{ worm_data|json_script:"worm-data-script" }}
+        {{ worm_data_all|json_script:"worm-data-all-script" }}
+        <script>
+            var wormLabels = JSON.parse(document.getElementById('worm-labels-script').textContent);
+            var wormData = JSON.parse(document.getElementById('worm-data-script').textContent);
+            var wormDataAll = JSON.parse(document.getElementById('worm-data-all-script').textContent);
+            var wormChart = new Chart(
+				"wormGraph",
+				{
+					data: {
+						labels: wormLabels,
+						datasets: wormData
+					},
+					options: {
+                        defaultFontFamily: "NotoSans, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+						defaultFontColor: "#999",
+						defaultFontSize: 18,
+						layout: {
+							padding: 80
+						},
+						legend: {
+							display: false
+						},
+						scales: {
+							xAxes: [{
+								ticks: {
+									fontSize: 14,
+									fontColor: "#999",
+                                    fontFamily: "Roboto, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+								}
+							}],
+							yAxes: [{
+								gridLines: {
+									color: "#555"
+								},
+								ticks: {
+									fontSize: 18,
+									fontColor: "#bbb",
+                                    fontFamily: "NotoSans, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+									padding: 0
+								}
+							}]
+						},
+						tooltips: {
+                            mode: 'index',
+                            intersect: false,
+							titleFontSize: 20,
+							titleFontFamily: "Roboto",
+							bodyFontSize: 20,
+							bodyFontFamily: "NotoSans",
+                            bodySpacing: 16,
+							callbacks: {
+								title: function(tooltipItems, data) {
+									return getOverString(tooltipItems[0].index);
+								},
+								label: function(tooltipItems, data) {
+                                    var i = tooltipItems.datasetIndex
+                                    var x = tooltipItems.index;
+									return wormDataAll[i / 2][x]["scoreText"];
+								}
+							},
+                            filter: function(tooltipItem) {return tooltipItem.datasetIndex % 2 == 0;}
+						}
+					}
+				}
+            );
+        </script>
+        <script>
+            function getOverString(balls) {
+                var s = ""
+                if (balls < 6) {
+                    s = String(balls) + " Ball"
+                    if (balls != 1) {
+                        s += "s"
+                    }
+                } else {
+                    var q = Math.floor(balls / 6);
+                    var r = balls % 6;
+                    s = String(q) + " Over"
+                    if (q != 1) {
+                        s += "s"
+                    }
+                    if (r > 0) {
+                        s += " "
+                        s += String(r)
+                        s += " Ball"
+                        if (r > 1) {
+                            s += "s"
+                        }
+                    }
+                }
+                return s;
+            }
+        </script>
+    </body>
+</html>

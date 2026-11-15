@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <script src="{% static 'chartjs/Chart_294.min.js' %}"></script>
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+            }
+            #avatar-container {
+                width: 95vw;
+                display: flex;
+                justify-content: center;
+            }
+            #team-details {
+                table-layout: fixed;
+            }
+            .rating {
+                font-size: 1.25em;
+            }
+            img {
+                max-height: 40vh;
+                width: auto;
+            }
+            #member-names {
+                font-size: 1.5em;
+            }
+            .win {
+                color: #00cc00;
+            }
+            .loss {
+                color: #ff4444;
+            }
+            .tie {
+                color: #bababa;
+            }
+            #rating-container {
+                position: relative;
+            }
+            #rating-rd {
+                display: none;
+                position: relative;
+                top: 100%;
+            }
+            #rating-container:hover #rating-rd {
+                display: block;
+            }
+        </style>
+        <title>{{ team.name }}</title>
+    </head>
+    <body>
+        {% if settings.team_flag %}
+        <div class="main-flag">
+            <span class="main-flag-container" style="background-color: {{ flag.bgcolor }};">
+                <img class="inline-flag" src="{% static flag.flag %}">
+            </span>
+        </div>
+        <span>&nbsp;</span>
+        {% endif %}
+        <h1 class="main-title" id="player-name">{{ team.name }}</h1>
+        <div class="summary-text">
+            <table id="team-details">
+                <tr>
+                    <th>Final Rank</th>
+                    <td>
+                        <a href="/team/{{ team.id }}/result">
+                            {{ placement }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Group Stage Rank</th>
+                    <td>{{ groupstage_position }}</td>
+                </tr>
+                <tr>
+                    <th>Rating</th>
+                    <td>
+                        <div id="rating-container">
+                            <span id="rating-value">
+                                {{ team.rating_glicko2.rating|floatformat:0 }}
+                            </span>
+                            <span id="rating-rd">
+                                Rating Deviation: {{ team.rating_glicko2.rd|floatformat:0 }}
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <h1>
+            Members
+            <a href="/team/{{ team.id }}/lineup">/ Lineup</a>
+        </h1>
+        <div class="summary-text" id="member-names">
+            <ol>
+                {% for i in members %}
+                <li>
+                    <a href="/member/{{ i.id }}"> 
+                        {% if i.player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif i.player_title.name != "" %}
+                        <span class="rating-player-title">{{ i.player_title.id }}</span>
+                        {% endif %}
+                        {{ i.name }} 
+                    </a>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        {% if show_rating_chart %}
+		<h1>Rating Progression</h1>
+		<canvas id="ratingProgression"></canvas>
+        {% endif %}
+
+        {% if show_games %}
+        <h1>{{ team.name }} Campaign</h1>
+        <div class="summary-text">
+            <h2>Group Stage</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Match</th>
+                        <th>Opponent</th>
+                        <th>Result</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody id="groupstage-resultbyteam">
+                    {% for i in groupstage_campaign %}
+                    <tr>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.round }}
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.match }}
+                            </a>
+                        </td>
+                        <td id="final-opponent">
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.opponent_name }}
+                            </a>
+                        </td>
+                        <td id="final-result">
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.result }}
+                            </a>
+                        </td>
+                        <td id="final-margin">
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.margin }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if settings.knockout == 1 %}
+                <h2>Final</h2>
+                {% if final_campaign.eligible %}
+                <table>
+                    <tr>
+                        <th>Round</th>
+                        <th>Match</th>
+                        <th>Opponent</th>
+                        <th>Result</th>
+                        <th>Margin</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a
+                                class="{{ final_campaign.display_class }}"
+                                href="/#final-match"
+                            >
+                                Knockout
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ final_campaign.display_class }}"
+                                href="/#final-match"
+                            >
+                                Final
+                            </a>
+                        </td>
+                        <td id="final-opponent">
+                            <a
+                                class="{{ final_campaign.display_class }}"
+                                href="/#final-match"
+                            >
+                                {{ final_campaign.opponent_name }}
+                            </a>
+                        </td>
+                        <td id="final-result">
+                            <a
+                                class="{{ final_campaign.display_class }}"
+                                href="/#final-match"
+                            >
+                                {{ final_campaign.result }}
+                            </a>
+                        </td>
+                        <td id="final-margin">
+                            <a
+                                class="{{ final_campaign.display_class }}"
+                                href="/#final-match"
+                            >
+                                {{ final_campaign.margin }}
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+                {% else %}
+                <table class="belligerent-list">
+                    <tr>
+                        <th class="loss">Not Eligible</th>
+                    </tr>
+                </table>
+                {% endif %}
+            {% else %}
+                <h2>Knockout</h2>
+                {% if final_campaign|length > 0 %}
+                <table>
+                    <tr>
+                        <th>Round</th>
+                        <th>Match</th>
+                        <th>Opponent</th>
+                        <th>Result</th>
+                        <th>Margin</th>
+                    </tr>
+                    {% for i in final_campaign %}
+                    <tr>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                Knockout
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.match }}
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.opponent_name }}
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.result }}
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.margin }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% else %}
+                <table class="belligerent-list">
+                    <tr>
+                        <th class="loss">Not Eligible</th>
+                    </tr>
+                </table>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <h1>Group Stage Matches</h1>
+        <div id="groupstage-matches">
+            {% for i in groupstage_matches %}
+            <div class="match-summary-box {{ i.result_class }}" id="groupstagematch-{{ i.id }}">
+                <a class="match-summary-text" href="/summary/groupstage/{{ i.id }}">
+                    <span>
+                        Group Stage
+                    </span>
+                    &nbsp;•&nbsp;
+                    <span>
+                        Match {{ i.match_number }}
+                        of {{ tournament_games }}
+                    </span>
+                </a>
+                <span>&nbsp;</span>
+                <div class="match-summary">
+                    <div class="match-summary-left">
+                        {% if settings.team_flag %}
+                        <div class="match-summary-team">
+                            <span class="medium-flag-container" style="background-color: {{ i.team1_flagcolor }};">
+                                <img class="inline-flag" src="{% static i.team1_flag %}">
+                            </span>
+                        </div>
+                        <span>&nbsp;</span>
+                        {% endif %}
+                        <div class="match-summary-team">
+                            <a href="/team/{{ i.team1 }}">
+                                {{ i.team1_name }}
+                            </a>
+                        </div>
+                        <div class="match-summary-rating">
+                            {{ i.team1_rating }}
+                            {% if i.team1_rdiff == 0 %}
+                            <span class="game-draw">±0</span>
+                            {% elif i.team1_rdiff > 0 %}
+                            <span class="rating-gain">+{{ i.team1_rdiff }}</span>
+                            {% elif i.team1_rdiff < 0 %}
+                            <span class="rating-loss">{{ i.team1_rdiff }}</span>
+                            {% endif %}
+                        </div>
+                        <span>&nbsp;</span>
+                        <div class="match-summary-score">
+                            {{ i.score1 }}
+                        </div>
+                        <div class="match-summary-termination">
+                            {{ i.balls1 }}
+                        </div>
+                        {% if i.show_1 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if i.p1upnbsp %}
+                            &nbsp;
+                            {% else %}
+                            <a style="color: {{ i.p1up.color }}" href="/member/{{ i.p1up.id }}">
+                                {% if i.p1up.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p1up.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p1up.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p1up.name }}
+                            </a>
+                            {% if i.p1up.type == "batter" %}
+                            {{ i.p1up.runs }}{% if not i.p1up.out %}*{% endif %}
+                            ({{ i.p1up.balls }})
+                            {% elif i.p1up.type == "bowler" %}
+                            {{ i.p1up.wickets }}/{{ i.p1up.runs }}
+                            ({{ i.p1up.balls }})
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        {% if i.show_2 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if i.p1dn is not None and i.p1dn != "" %}
+                            <a style="color: {{ i.p1dn.color }}" href="/member/{{ i.p1dn.id }}">
+                                {% if i.p1dn.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p1dn.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p1dn.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p1dn.name }}
+                            </a>
+                            {% if i.p1dn.type == "batter" %}
+                            {{ i.p1dn.runs }}{% if not i.p1dn.out %}*{% endif %}
+                            ({{ i.p1dn.balls }})
+                            {% elif i.p1dn.type == "bowler" %}
+                            {{ i.p1dn.wickets }}/{{ i.p1dn.runs }}
+                            ({{ i.p1dn.balls }})
+                            {% endif %}
+                            {% endif %}
+                            {% if i.p1nbsp %} &nbsp; {% endif %}
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+                    <div class="match-summary-team">v</div>
+                    <div class="match-summary-right">
+                        {% if settings.team_flag %}
+                        <div class="match-summary-team">
+                            <span class="medium-flag-container" style="background-color: {{ i.team2_flagcolor }};">
+                                <img class="inline-flag" src="{% static i.team2_flag %}">
+                            </span>
+                        </div>
+                        <span>&nbsp;</span>
+                        {% endif %}
+                        <div class="match-summary-team">
+                            <a href="/team/{{ i.team2 }}">
+                                {{ i.team2_name }}
+                            </a>
+                        </div>
+                        <div class="match-summary-rating">
+                            {{ i.team2_rating }}
+                            {% if i.team2_rdiff == 0 %}
+                            <span class="game-draw">±0</span>
+                            {% elif i.team2_rdiff > 0 %}
+                            <span class="rating-gain">+{{ i.team2_rdiff }}</span>
+                            {% elif i.team2_rdiff < 0 %}
+                            <span class="rating-loss">{{ i.team2_rdiff }}</span>
+                            {% endif %}
+                        </div>
+                        <span>&nbsp;</span>
+                        <div class="match-summary-score">
+                            {{ i.score2 }}
+                        </div>
+                        <div class="match-summary-termination">
+                            {{ i.balls2 }}
+                        </div>
+                        {% if i.show_1 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if i.p2upnbsp %}
+                            &nbsp;
+                            {% else %}
+                            <a style="color: {{ i.p2up.color }}" href="/member/{{ i.p2up.id }}">
+                                {% if i.p2up.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p2up.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p2up.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p2up.name }}
+                            </a>
+                            {% if i.p2up.type == "batter" %}
+                            {{ i.p2up.runs }}{% if not i.p2up.out %}*{% endif %}
+                            ({{ i.p2up.balls }})
+                            {% elif i.p2up.type == "bowler" %}
+                            {{ i.p2up.wickets }}/{{ i.p2up.runs }}
+                            ({{ i.p2up.balls }})
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        {% if i.show_2 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if i.p2dn is not None and i.p2dn != "" %}
+                            <a style="color: {{ i.p2dn.color }}" href="/member/{{ i.p2dn.id }}">
+                                {% if i.p2dn.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p2dn.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p2dn.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p2dn.name }}
+                            </a>
+                            {% if i.p2dn.type == "batter" %}
+                            {{ i.p2dn.runs }}{% if not i.p2dn.out %}*{% endif %}
+                            ({{ i.p2dn.balls }})
+                            {% elif i.p2dn.type == "bowler" %}
+                            {{ i.p2dn.wickets }}/{{ i.p2dn.runs }}
+                            ({{ i.p2dn.balls }})
+                            {% endif %}
+                            {% endif %}
+                            {% if i.p2nbsp %} &nbsp; {% endif %}
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+                </div>
+                <span>&nbsp;</span>
+                <div class="match-summary-termination">
+                    {{ i.win_string }}
+                </div>
+                <span>&nbsp;</span>
+                <div class="match-summary-termination">
+                    Player of the Match: 
+                    {% if i.potm_id is None or i.potm_id == "" %}
+                    {{ i.potm }}
+                    {% else %}
+                    <a href="/member/{{ i.potm_id }}">
+                        {% if i.potm_player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif i.potm_player_title.name != "" %}
+                        <span class="rating-player-title">{{ i.potm_player_title.id }}</span>
+                        {% endif %}
+                        {{ i.potm }}
+                    </a>
+                    {% endif %}
+                </div>
+                <!--
+                {% if i.enable_notes %}
+                <span>&nbsp;</span>
+                <div class="match-summary-notes">
+                    <ul>
+                    {% for j in i.qualified %}
+                    <li style="color: #00cc00">
+                        {{ j }} qualified for the {{ ko }} as a result of this match.
+                    </li>
+                    {% endfor %}
+                    {% for j in i.eliminated %}
+                    <li style="color: #cccc00;">
+                        {{ j }} were eliminated as a result of this match.
+                    </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            -->
+            </div>
+            {% endfor %}
+        </div>
+        {% if settings.knockout == 1 %}
+            {% if final_campaign.eligible %}
+            <h1>Final</h1>
+            <div class="match-summary-box {{ final.result_class }}" id="knockout-final">
+                <a class="match-summary-text" href="/summary/knockout/final">
+                    <span>
+                        Final
+                    </span>
+                    &nbsp;•&nbsp;
+                    <span>
+                        Match {{ tournament_games }}
+                        of {{ tournament_games }}
+                    </span>
+                </a>
+                <span>&nbsp;</span>
+                <div class="match-summary">
+                    <div class="match-summary-left">
+                        {% if settings.team_flag %}
+                        <div class="match-summary-team">
+                            <span class="medium-flag-container" style="background-color: {{ final.team1_flagcolor }};">
+                                <img class="inline-flag" src="{% static final.team1_flag %}">
+                            </span>
+                        </div>
+                        <span>&nbsp;</span>
+                        {% endif %}
+                        <div class="match-summary-team">
+                            <a href="/team/{{ final.team1 }}">
+                                {{ final.team1_name }}
+                            </a>
+                        </div>
+                        <div class="match-summary-rating">
+                            {{ final.team1_rating }}
+                            {% if final.team1_rdiff == 0 %}
+                            <span class="game-draw">±0</span>
+                            {% elif final.team1_rdiff > 0 %}
+                            <span class="rating-gain">+{{ final.team1_rdiff }}</span>
+                            {% elif final.team1_rdiff < 0 %}
+                            <span class="rating-loss">{{ final.team1_rdiff }}</span>
+                            {% endif %}
+                        </div>
+                        <span>&nbsp;</span>
+                        <div class="match-summary-score">{{ final.score1 }}</div>
+                        <div class="match-summary-termination">
+                            {{ final.balls1 }}
+                        </div>
+                        {% if final.show_1 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if final.p1upnbsp %}
+                            &nbsp;
+                            {% else %}
+                            <a style="color: {{ final.p1up.color }}" href="/member/{{ final.p1up.id }}">
+                                {% if final.p1up.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif final.p1up.player_title.name != "" %}
+                                <span class="rating-player-title">{{ final.p1up.player_title.id }}</span>
+                                {% endif %}
+                                {{ final.p1up.name }}
+                            </a>
+                            {% if final.p1up.type == "batter" %}
+                            {{ final.p1up.runs }}{% if not final.p1up.out %}*{% endif %}
+                            ({{ final.p1up.balls }})
+                            {% elif final.p1up.type == "bowler" %}
+                            {{ final.p1up.wickets }}/{{ final.p1up.runs }}
+                            ({{ final.p1up.balls }})
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        {% if final.show_2 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if final.p1dn is not None and final.p1dn != "" %}
+                            <a style="color: {{ final.p1dn.color }}" href="/member/{{ final.p1dn.id }}">
+                                {% if final.p1dn.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif final.p1dn.player_title.name != "" %}
+                                <span class="rating-player-title">{{ final.p1dn.player_title.id }}</span>
+                                {% endif %}
+                                {{ final.p1dn.name }}
+                            </a>
+                            {% if final.p1dn.type == "batter" %}
+                            {{ final.p1dn.runs }}{% if not final.p1dn.out %}*{% endif %}
+                            ({{ final.p1dn.balls }})
+                            {% elif final.p1dn.type == "bowler" %}
+                            {{ final.p1dn.wickets }}/{{ final.p1dn.runs }}
+                            ({{ final.p1dn.balls }})
+                            {% endif %}
+                            {% endif %}
+                            {% if final.p1nbsp %} &nbsp; {% endif %}
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+                    <div class="match-summary-team">v</div>
+                    <div class="match-summary-right">
+                        {% if settings.team_flag %}
+                        <div class="match-summary-team">
+                            <span class="medium-flag-container" style="background-color: {{ final.team2_flagcolor }};">
+                                <img class="inline-flag" src="{% static final.team2_flag %}">
+                            </span>
+                        </div>
+                        <span>&nbsp;</span>
+                        {% endif %}
+                        <div class="match-summary-team">
+                            <a href="/team/{{ final.team2 }}">
+                                {{ final.team2_name }}
+                            </a>
+                        </div>
+                        <div class="match-summary-rating">
+                            {{ final.team2_rating }}
+                            {% if final.team2_rdiff == 0 %}
+                            <span class="game-draw">±0</span>
+                            {% elif final.team2_rdiff > 0 %}
+                            <span class="rating-gain">+{{ final.team2_rdiff }}</span>
+                            {% elif final.team2_rdiff < 0 %}
+                            <span class="rating-loss">{{ final.team2_rdiff }}</span>
+                            {% endif %}
+                        </div>
+                        <span>&nbsp;</span>
+                        <div class="match-summary-score">{{ final.score2 }}</div>
+                        <div class="match-summary-termination">
+                            {{ final.balls2 }}
+                        </div>
+                        {% if final.show_1 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if final.p2upnbsp %}
+                            &nbsp;
+                            {% else %}
+                            <a style="color: {{ final.p2up.color }}" href="/member/{{ final.p2up.id }}">
+                                {% if final.p2up.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif final.p2up.player_title.name != "" %}
+                                <span class="rating-player-title">{{ final.p2up.player_title.id }}</span>
+                                {% endif %}
+                                {{ final.p2up.name }}
+                            </a>
+                            {% if final.p2up.type == "batter" %}
+                            {{ final.p2up.runs }}{% if not final.p2up.out %}*{% endif %}
+                            ({{ final.p2up.balls }})
+                            {% elif final.p2up.type == "bowler" %}
+                            {{ final.p2up.wickets }}/{{ final.p2up.runs }}
+                            ({{ final.p2up.balls }})
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        {% if final.show_2 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if final.p2dn is not None and final.p2dn != "" %}
+                            <a style="color: {{ final.p2dn.color }}" href="/member/{{ final.p2dn.id }}">
+                                {% if final.p2dn.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif final.p2dn.player_title.name != "" %}
+                                <span class="rating-player-title">{{ final.p2dn.player_title.id }}</span>
+                                {% endif %}
+                                {{ final.p2dn.name }}
+                            </a>
+                            {% if final.p2dn.type == "batter" %}
+                            {{ final.p2dn.runs }}{% if not final.p2dn.out %}*{% endif %}
+                            ({{ final.p2dn.balls }})
+                            {% elif final.p2dn.type == "bowler" %}
+                            {{ final.p2dn.wickets }}/{{ final.p2dn.runs }}
+                            ({{ final.p2dn.balls }})
+                            {% endif %}
+                            {% endif %}
+                            {% if final.p2nbsp %} &nbsp; {% endif %}
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+                </div>
+                <span>&nbsp;</span>
+                <div class="match-summary-termination">{{ final.win_string }}</div>
+                <span>&nbsp;</span>
+                <div class="match-summary-termination">
+                    Player of the Match: 
+                    {% if final.potm_id is None or final.potm_id == "" %}
+                    {{ final.potm }}
+                    {% else %}
+                    <a href="/member/{{ final.potm_id }}">
+                        {% if final.potm_player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif final.potm_player_title.name != "" %}
+                        <span class="rating-player-title">{{ final.potm_player_title.id }}</span>
+                        {% endif %}
+                        {{ final.potm }}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+        {% if final|length > 0 %}
+        <h1>Knockout</h1>
+        <div id="knockout-matches">
+            {% for i in final %}
+            <div class="match-summary-box {{ i.result_class }}" id="knockoutmatch-{{ i.id }}">
+                <a class="match-summary-text" href="/summary/knockout/{{ i.id }}">
+                    <span>
+                        {% if i.id == "final" %}
+                        Final
+                        {% elif i.id == "sf1" %}
+                        Semi-Final 1
+                        {% elif i.id == "sf2" %}
+                        Semi-Final 2
+                        {% elif i.id == "qf1" %}
+                        Quarter-Final 1
+                        {% elif i.id == "qf2" %}
+                        Quarter-Final 2
+                        {% elif i.id == "qf3" %}
+                        Quarter-Final 3
+                        {% elif i.id == "qf4" %}
+                        Quarter-Final 4
+                        {% elif i.id == "thirdplace" %}
+                        3<sup>rd</sup> Place Playoff
+                        {% else %}
+                        Knockout
+                        {% endif %}
+                    </span>
+                    &nbsp;•&nbsp;
+                    <span>
+                        Match {{ i.match_number }}
+                        of {{ tournament_games }}
+                    </span>
+                </a>
+                <span>&nbsp;</span>
+                <div class="match-summary">
+                    <div class="match-summary-left">
+                        {% if settings.team_flag %}
+                        <div class="match-summary-team">
+                            <span class="medium-flag-container" style="background-color: {{ i.team1_flagcolor }};">
+                                <img class="inline-flag" src="{% static i.team1_flag %}">
+                            </span>
+                        </div>
+                        <span>&nbsp;</span>
+                        {% endif %}
+                        <div class="match-summary-team">
+                            <a href="/team/{{ i.team1 }}">
+                                {{ i.team1_name }}
+                            </a>
+                        </div>
+                        <div class="match-summary-rating">
+                            {{ i.team1_rating }}
+                            {% if i.team1_rdiff == 0 %}
+                            <span class="game-draw">±0</span>
+                            {% elif i.team1_rdiff > 0 %}
+                            <span class="rating-gain">+{{ i.team1_rdiff }}</span>
+                            {% elif i.team1_rdiff < 0 %}
+                            <span class="rating-loss">{{ i.team1_rdiff }}</span>
+                            {% endif %}
+                        </div>
+                        <span>&nbsp;</span>
+                        <div class="match-summary-score">
+                            {{ i.score1 }}
+                        </div>
+                        <div class="match-summary-termination">
+                            {{ i.balls1 }}
+                        </div>
+                        {% if i.show_1 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if i.p1upnbsp %}
+                            &nbsp;
+                            {% else %}
+                            <a style="color: {{ i.p1up.color }}" href="/member/{{ i.p1up.id }}">
+                                {% if i.p1up.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p1up.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p1up.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p1up.name }}
+                            </a>
+                            {% if i.p1up.type == "batter" %}
+                            {{ i.p1up.runs }}{% if not i.p1up.out %}*{% endif %}
+                            ({{ i.p1up.balls }})
+                            {% elif i.p1up.type == "bowler" %}
+                            {{ i.p1up.wickets }}/{{ i.p1up.runs }}
+                            ({{ i.p1up.balls }})
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        {% if i.show_2 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if i.p1dn is not None and i.p1dn != "" %}
+                            <a style="color: {{ i.p1dn.color }}" href="/member/{{ i.p1dn.id }}">
+                                {% if i.p1dn.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p1dn.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p1dn.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p1dn.name }}
+                            </a>
+                            {% if i.p1dn.type == "batter" %}
+                            {{ i.p1dn.runs }}{% if not i.p1dn.out %}*{% endif %}
+                            ({{ i.p1dn.balls }})
+                            {% elif i.p1dn.type == "bowler" %}
+                            {{ i.p1dn.wickets }}/{{ i.p1dn.runs }}
+                            ({{ i.p1dn.balls }})
+                            {% endif %}
+                            {% endif %}
+                            {% if i.p1nbsp %} &nbsp; {% endif %}
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+                    <div class="match-summary-team">v</div>
+                    <div class="match-summary-right">
+                        {% if settings.team_flag %}
+                        <div class="match-summary-team">
+                            <span class="medium-flag-container" style="background-color: {{ i.team2_flagcolor }};">
+                                <img class="inline-flag" src="{% static i.team2_flag %}">
+                            </span>
+                        </div>
+                        <span>&nbsp;</span>
+                        {% endif %}
+                        <div class="match-summary-team">
+                            <a href="/team/{{ i.team2 }}">
+                                {{ i.team2_name }}
+                            </a>
+                        </div>
+                        <div class="match-summary-rating">
+                            {{ i.team2_rating }}
+                            {% if i.team2_rdiff == 0 %}
+                            <span class="game-draw">±0</span>
+                            {% elif i.team2_rdiff > 0 %}
+                            <span class="rating-gain">+{{ i.team2_rdiff }}</span>
+                            {% elif i.team2_rdiff < 0 %}
+                            <span class="rating-loss">{{ i.team2_rdiff }}</span>
+                            {% endif %}
+                        </div>
+                        <span>&nbsp;</span>
+                        <div class="match-summary-score">
+                            {{ i.score2 }}
+                        </div>
+                        <div class="match-summary-termination">
+                            {{ i.balls2 }}
+                        </div>
+                        {% if i.show_1 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if i.p2upnbsp %}
+                            &nbsp;
+                            {% else %}
+                            <a style="color: {{ i.p2up.color }}" href="/member/{{ i.p2up.id }}">
+                                {% if i.p2up.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p2up.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p2up.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p2up.name }}
+                            </a>
+                            {% if i.p2up.type == "batter" %}
+                            {{ i.p2up.runs }}{% if not i.p2up.out %}*{% endif %}
+                            ({{ i.p2up.balls }})
+                            {% elif i.p2up.type == "bowler" %}
+                            {{ i.p2up.wickets }}/{{ i.p2up.runs }}
+                            ({{ i.p2up.balls }})
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        {% if i.show_2 %}
+                        <span>&nbsp;</span>
+                        <div class="match-summary-termination">
+                            {% if i.p2dn is not None and i.p2dn != "" %}
+                            <a style="color: {{ i.p2dn.color }}" href="/member/{{ i.p2dn.id }}">
+                                {% if i.p2dn.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p2dn.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p2dn.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p2dn.name }}
+                            </a>
+                            {% if i.p2dn.type == "batter" %}
+                            {{ i.p2dn.runs }}{% if not i.p2dn.out %}*{% endif %}
+                            ({{ i.p2dn.balls }})
+                            {% elif i.p2dn.type == "bowler" %}
+                            {{ i.p2dn.wickets }}/{{ i.p2dn.runs }}
+                            ({{ i.p2dn.balls }})
+                            {% endif %}
+                            {% endif %}
+                            {% if i.p2nbsp %} &nbsp; {% endif %}
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+                </div>
+                <span>&nbsp;</span>
+                <div class="match-summary-termination">
+                    {{ i.win_string }}
+                </div>
+                <span>&nbsp;</span>
+                <div class="match-summary-termination">
+                    Player of the Match: 
+                    {% if i.potm_id is None or i.potm_id == "" %}
+                    {{ i.potm }}
+                    {% else %}
+                    <a href="/member/{{ i.potm_id }}">
+                        {% if i.potm_player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif i.potm_player_title.name != "" %}
+                        <span class="rating-player-title">{{ i.potm_player_title.id }}</span>
+                        {% endif %}
+                        {{ i.potm }}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        {% endif %}
+        {% endif %}
+        {% if show_rating_chart %}
+        {{ ratings|json_script:"ratings-script" }}
+        {{ rating_labels|json_script:"rating-labels-script" }}
+        <script>
+            var chartLabels = JSON.parse(document.getElementById('rating-labels-script').textContent);
+            var teamRatings = JSON.parse(document.getElementById('ratings-script').textContent);
+            ratingChart = new Chart(
+				"ratingProgression",
+				{
+					type: "line",
+					data: {
+						labels: chartLabels,
+						datasets: [
+							{
+								fill: false,
+								lineTension: 0,
+								backgroundColor: "#00ff00",
+								borderColor: "#00ff0088",
+								data: teamRatings
+							}
+						]
+					},
+					options: {
+                        defaultFontFamily: "NotoSans, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+						defaultFontColor: "#999",
+						defaultFontSize: 18,
+						layout: {
+							padding: 80
+						},
+						legend: {
+							display: false
+						},
+						scales: {
+							xAxes: [{
+								ticks: {
+									fontSize: 14,
+									fontColor: "#999",
+                                    fontFamily: "Roboto, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+								}
+							}],
+							yAxes: [{
+								gridLines: {
+									color: "#555"
+								},
+								ticks: {
+									fontSize: 18,
+									fontColor: "#bbb",
+                                    fontFamily: "NotoSans, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+									padding: 0
+								}
+							}]
+						},
+						tooltips: {
+							titleFontSize: 20,
+							titleFontFamily: "Roboto",
+							bodyFontSize: 20,
+							bodyFontFamily: "NotoSans",
+							callbacks: {
+								title: function(tooltipItems, data) {
+									return tooltipItems[0].xLabel;
+								},
+								label: function(tooltipItems, data) {
+									return "Rating: " + Math.round(tooltipItems.yLabel);
+								}
+							}
+						}
+					}
+				}
+            );
+        </script>
+        {% endif %}
+    </body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+        <style>
+            th,
+            td {
+                font-size: 1.2em;
+            }
+
+            .brief-summary {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .brief-summary-content {
+                font-weight: 400;
+            }
+
+            .innings-button {
+                width: 40vw;
+                font-size: 1.35em;
+                text-align: center;
+                background-color: #3b2d34;
+                color: #bababa;
+                border: none;
+                margin: 1% 1%;
+                padding: 1% 1%;
+            }
+
+            .partnership-name {
+                font-size: 2.5em;
+                font-weight: 400;
+                text-align: center;
+                padding-top: 1vh;
+                padding-bottom: 1vh;
+                width: 100%;
+            }
+
+            .partnership-element,
+            .partnership-element2 {
+                display: flex;
+                font-size: 1.25em;
+            }
+
+            .partnership-element div {
+                padding-left: 0.5vw;
+                padding-right: 0.5vw;
+            }
+
+            .player-avatar-div {
+                display: flex;
+                width: 5vw;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .player-avatar {
+                max-height: 5vw;
+                max-width: 5vw;
+            }
+
+            .pl-div {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .pl-div2 {
+                width: 80vw;
+                margin-left: 1vw;
+                margin-right: 1vw;
+            }
+        </style>
+    </head>
+    <body>
+        {% include "score_main.html" %}
+        <hr />
+        <div class="match-summary">
+            {% for i in c %}
+            <a
+                class="innings-button"
+                href="/partnerships/{{ clas }}/{{ id }}/{{ i }}"
+            >
+                Innings {{ i }}
+            </a>
+            {% endfor %}
+        </div>
+        <hr />
+        <div class="partnership-name" id="partnership-name">
+            {{ batting_team }}
+        </div>
+        <hr />
+        <div class="paper summary-text" id="main-partnerships">
+            {% for i in partnerships %}
+            <div class="pl-div">
+                    <div class="player-avatar-div">
+                        <img class="player-avatar" src="{% static i.p1_avatar %}" alt="" />
+                    </div>
+                <div class="pl-div2">
+                <div class="partnership-element">
+                    <div style="text-align: left; width: 32vw">
+                        {% if i.p1_player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif i.p1_player_title.name != "" %}
+                        <span class="rating-player-title">{{ i.p1_player_title.id }}</span>
+                        {% endif %}
+                        {{ i.p1_name }}
+                    </div>
+                    <div style="text-align: right; width: 8vw">{{ i.total_runs }}</div>
+                    <div style="text-align: left; width: 8vw">({{ i.total_balls }})</div>
+                    <div style="text-align: right; width: 32vw">
+                        {% if i.p2_player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif i.p2_player_title.name != "" %}
+                        <span class="rating-player-title">{{ i.p2_player_title.id }}</span>
+                        {% endif %}
+                        {{ i.p2_name }}
+                    </div>
+                </div>
+                <div class="partnership-element2">
+                    <div
+                        style="
+                            text-align: left;
+                            width: 15vw;
+                            padding-left: 0.5vw;
+                        "
+                    >
+                        {{ i.p1_runs }} ({{ i.p1_balls }})
+                    </div>
+                    <div style="width: {{ i.p1_left_width }}vw"></div>
+                    <div
+                        style="
+                            background-color: {{ partner_color }};
+                            width: {{ i.p1_width }}vw;
+                            margin-right: 0.5vw;
+                            margin-top: 0.5vh;
+                            margin-bottom: 0.5vh;
+                        "
+                    ></div>
+                    <div
+                        style="
+                            background-color: {{ partner_color }};
+                            width: {{ i.p2_width }}vw;
+                            margin-left: 0.5vw;
+                            margin-top: 0.5vh;
+                            margin-bottom: 0.5vh;
+                        "
+                    ></div>
+                    <div style="width: {{ i.p2_left_width }}vw"></div>
+                    <div
+                        style="
+                            text-align: right;
+                            width: 15vw;
+                            padding-right: 0.5vw;
+                        "
+                    >
+                        {{ i.p2_runs }} ({{ i.p2_balls }})
+                    </div>
+                </div>
+                </div>
+                    <div class="player-avatar-div">
+                        <img class="player-avatar" src="{% static i.p2_avatar %}" alt="" />
+                    </div>
+            </div>
+            <hr />
+            {% endfor %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+    </head>
+    <body>
+        {% include "score_main.html" %}
+        <hr />
+        <div class="summary-text">
+            <h2>Export</h2>
+            <ul>
+                <li>
+                    <a href="/matches/{{ clas }}/{{ id }}">
+                        Export Raw Match Data (JSON)
+                    </a>
+                </li>
+            </ul>
+            <h2>Components</h2>
+            <ul>
+                <li>
+                    <a href="/matchsummary/{{ clas }}/{{ id }}">
+                        View Match Summary
+                    </a>
+                </li>
+                <li>
+                    <a href="/scorecard/{{ clas }}/{{ id }}/0">
+                        View Scorecard
+                    </a>
+                </li>
+                <li>
+                    <a href="/commentary/{{ clas }}/{{ id }}">
+                        View Match Commentary
+                    </a>
+                </li>
+                <li>
+                    <a href="/partnerships/{{ clas }}/{{ id }}/0">
+                        View Partnerships
+                    </a>
+                </li>
+                <li>
+                    <a href="/wormgraph/{{ clas }}/{{ id }}">
+                        View the scoring rate as a worm graph
+                    </a>
+                </li>
+            </ul>
+            <h2>Match Replay</h2>
+            <ul>
+                <li>
+                    <a href="/replay/{{ clas }}/{{ id }}">
+                        View Full Match Replay
+                    </a>
+                </li>
+            </ul>
+            <h2>Evaluation and Legal (Conratingntial)</h2>
+            <ul>
+                <li>
+                    <a href="/nomination/{{ clas }}/{{ id }}/0">
+                        View Team Rosters as submitted to Match Referee
+                    </a>
+                </li>
+                <li>
+                    <a href="/matchreport/{{ clas }}/{{ id }}">
+                        View Final Match Referee Report
+                    </a>
+                </li>
+                <li>
+                    <a href="/analysis/{{ clas }}/{{ id }}">
+                        View Engine Evaluation
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>

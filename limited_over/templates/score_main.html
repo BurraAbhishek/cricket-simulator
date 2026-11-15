@@ -1,0 +1,98 @@
+{% load static %}
+<div id="score-main">
+    <div class="match-summary-box">
+        <div class="match-summary">
+            <div class="match-summary-left">
+                {% if summary.show_flags %}
+                <div class="match-summary-team">
+                    <span class="flag-container" style="background-color: {{ summary.team1_flagcolor }};">
+                        <img class="inline-flag" src="{% static summary.team1_flag %}">
+                    </span>
+                    <span style="font-size: 0.2em;">&nbsp;</span>
+                    <a href="/team/{{ summary.team1_id }}" style="font-size: 0.75em;">
+                        {{ summary.team1_name }}
+                    </a>
+                </div>
+                <div class="match-summary-scoreboard">
+                    <div
+                        class="match-summary-score"
+                        id="pl-team-1-score"
+                    >{{ summary.score1 }}</div>
+                    <div
+                        class="match-summary-termination"
+                        id="pl-team-1-overs"
+                    >({{ summary.overs1 }})</div>
+                </div>
+                {% else %}
+                <div
+                    class="match-summary-team"
+                >
+                    <a href="/team/{{ summary.team1_id }}">
+                        {{ summary.team1_name }}
+                    </a>
+                </div>
+                <div>
+                    <div
+                        class="match-summary-score"
+                        id="pl-team-1-score"
+                    >{{ summary.score1 }}</div>
+                    <div
+                        class="match-summary-termination"
+                        id="pl-team-1-overs"
+                    >({{ summary.overs1 }})</div>
+                </div>
+                {% endif %}
+            </div>
+            <div
+                class="match-summary-termination-result"
+                id="pl-match-result"
+            >
+                <span>{{ summary.match_name }}</span>
+                <br />
+                <span>{{ summary.win_string }}</span>
+            </div>
+            <div class="match-summary-right">
+                {% if summary.show_flags %}
+                <div class="match-summary-scoreboard">
+                    <div
+                        class="match-summary-score"
+                        id="pl-team-2-score"
+                    >{{ summary.score2 }}</div>
+                    <div
+                        class="match-summary-termination"
+                        id="pl-team-2-overs"
+                    >({{ summary.overs2 }})</div>
+                </div>
+                <div class="match-summary-team">
+                    <span class="flag-container" style="background-color: {{ summary.team2_flagcolor }};">
+                        <img class="inline-flag" src="{% static summary.team2_flag %}">
+                    </span>
+                    <span style="font-size: 0.2em;">&nbsp;</span>
+                    <a href="/team/{{ summary.team2_id }}" style="font-size: 0.75em;">
+                        {{ summary.team2_name }}
+                    </a>
+                </div>
+                {% else %}
+                <div style="direction: rtl">
+                    <div
+                        class="match-summary-score"
+                        id="pl-team-2-score"
+                    >{{ summary.score2 }}</div>
+                    <div
+                        class="match-summary-termination"
+                        id="pl-team-2-overs"
+                    >({{ summary.overs2 }})</div>
+                </div>
+                <div
+                    class="match-summary-team"
+                    id="pl-team-2-name"
+                >
+                    <a href="/team/{{ summary.team2_id }}">
+                        {{ summary.team2_name }}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

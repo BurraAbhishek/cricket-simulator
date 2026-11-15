@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+            }
+            .win {
+                color: #00cc00;
+            }
+            .loss {
+                color: #ff4444;
+            }
+            .tie {
+                color: #bababa;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 class="main-title" id="team-name">{{ team_name }} Campaign</h1>
+        {% if not settings.debug %}
+        <div class="summary-text">
+            <h2>Group Stage</h2>
+            <table class="belligerent-list">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Match</th>
+                        <th>Opponent</th>
+                        <th>Result</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody id="groupstage-resultbyteam">
+                    {% for i in groupstage_matches %}
+                    <tr>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.round }}
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.match }}
+                            </a>
+                        </td>
+                        <td id="final-opponent">
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.opponent_name }}
+                            </a>
+                        </td>
+                        <td id="final-result">
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.result }}
+                            </a>
+                        </td>
+                        <td id="final-margin">
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.margin }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if settings.knockout == 1 %}
+                <h2>Final</h2>
+                {% if final.eligible %}
+                <table class="belligerent-list">
+                    <tr>
+                        <th>Round</th>
+                        <th>Match</th>
+                        <th>Opponent</th>
+                        <th>Result</th>
+                        <th>Margin</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a
+                                class="{{ final.display_class }}"
+                                href="/#final-match"
+                            >
+                                Knockout
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ final.display_class }}"
+                                href="/#final-match"
+                            >
+                                Final
+                            </a>
+                        </td>
+                        <td id="final-opponent">
+                            <a
+                                class="{{ final.display_class }}"
+                                href="/#final-match"
+                            >
+                                {{ final.opponent_name }}
+                            </a>
+                        </td>
+                        <td id="final-result">
+                            <a
+                                class="{{ final.display_class }}"
+                                href="/#final-match"
+                            >
+                                {{ final.result }}
+                            </a>
+                        </td>
+                        <td id="final-margin">
+                            <a
+                                class="{{ final.display_class }}"
+                                href="/#final-match"
+                            >
+                                {{ final.margin }}
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+                {% else %}
+                <table class="belligerent-list">
+                    <tr>
+                        <th class="loss">Not Eligible</th>
+                    </tr>
+                </table>
+                {% endif %}
+            {% else %}
+                <h2>Knockout</h2>
+                {% if final|length > 0 %}
+                <table class="belligerent-list">
+                    <tr>
+                        <th>Round</th>
+                        <th>Match</th>
+                        <th>Opponent</th>
+                        <th>Result</th>
+                        <th>Margin</th>
+                    </tr>
+                    {% for i in final %}
+                    <tr>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                Knockout
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.match }}
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.opponent_name }}
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.result }}
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                class="{{ i.display_class }}"
+                                href="{{ i.link }}"
+                            >
+                                {{ i.margin }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% else %}
+                <table class="belligerent-list">
+                    <tr>
+                        <th class="loss">Not Eligible</th>
+                    </tr>
+                </table>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </body>
+</html>

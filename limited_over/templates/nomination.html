@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+        <style>
+            .innings-button {
+                width: 40vw;
+                font-size: 1.35em;
+                background-color: #3b2d34;
+                text-align: center;
+                color: #dddddd;
+                border: 1px solid #4c3e45;
+                margin: 1% 1%;
+                padding: 1% 1%;
+            }
+            .stat-insight-header {
+                display: flex;
+                font-size: 1.3em;
+                font-weight: 700;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-body {
+                display: flex;
+                font-size: 1.2em;
+                align-items: center;
+                height: 5vw;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-name {
+                width: 42vw;
+                text-align: left;
+                padding-left: 10.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-name-heading {
+                width: 50vw;
+                text-align: left;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-rank {
+                width: 10vw;
+                text-align: center;
+            }
+            .stat-insight-insight {
+                width: 20vw;
+                text-align: center;
+            }
+            .stat-team-name {
+                padding: 0;
+                font-size: 1.2em;
+            }
+            .stat-pad {
+                width: 10vw;
+            }
+            .stat-insight-status {
+                width: 50vw;
+                padding-left: 28vw;
+                padding-right: 2.5vw;
+                padding-top: 1vh;
+                padding-bottom: 1vh;
+                text-align: left;
+                font-size: 1em;
+            }
+            .stat-insight-separator {
+                width: 1vw;
+                color: #888;
+            }
+            .stat-hr {
+                color: #999;
+                width: 95vw;
+            }
+            .tooltip-container {
+                position: relative;
+            }
+            .tooltip-text {
+                display: none;
+                position: absolute;
+                box-sizing: border-box;
+                padding-top: 1vh;
+                top: 110%;
+                left: 0;
+                word-wrap: break-word;
+            }
+            .tooltip-container:hover .tooltip-text {
+                display: block;
+                position: relative;
+            }
+            a {
+                color: inherit;
+            }
+            .player-avatar-div {
+                position: absolute;
+                left: 16vw;
+                display: flex;
+                height: 5vw;
+                width: 5vw;
+                justify-content: center;
+                align-items: center;
+                margin: 0 1vw;
+            }
+            .player-avatar {
+                max-height: 5vw;
+                max-width: 5vw;
+            }
+            li {
+                padding-bottom: 1vh;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Player Nomination Forms</h1>
+        <div class="match-summary">
+            <a class="innings-button" href="/nomination/{{ clas }}/{{ id }}/1">
+                {{ team1 }}
+            </a>
+            <a class="innings-button" href="/nomination/{{ clas }}/{{ id }}/2">
+                {{ team2 }}
+            </a>
+        </div>
+        <hr />
+        {% if data is not None %}
+        <div class="nomination-form summary-text">
+            <div>
+                <h2>Match Details</h2>
+                <div>
+                    Match Name:
+                    <span>{{ data.match_name }}</span>
+                </div>
+                <br />
+                <div>
+                    Team:
+                    <span>{{ data.team_name }}</span>
+                </div>
+                <br />
+            </div>
+            <hr />
+            <div>
+                <h2>The Starting 11 Players</h2>
+                <div class="stat-insight-header">
+                    <div class="stat-insight-rank">Order</div>
+                    <div class="stat-insight-name-heading">Player</div>
+                    <div class="stat-insight-insight">Roles</div>
+                </div>
+                <hr class="stat-hr" />
+                {% for i in data.starting_11 %}
+                <div class="stat-insight-body">
+                    <div class="stat-insight-rank">{{ forloop.counter }}</div>
+                    <div class="player-avatar-div">
+                        <img
+                            class="player-avatar"
+                            src="{% static i.avatar %}"
+                            alt=""
+                        />
+                    </div>
+                    <div class="stat-insight-name">
+                        <a href="/member/{{ i.id }}">
+                            {% if i.player_title.id == "BOT" %}
+                            <span class="rating-bot-title">BOT</span>
+                            {% elif i.player_title.name != "" %}
+                            <span class="rating-player-title"
+                                >{{ i.player_title.id }}</span
+                            >
+                            {% endif %} {{ i.name }}
+                        </a>
+                    </div>
+                    <div class="stat-insight-insight">{{ i.role }}</div>
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+            </div>
+            <hr />
+            <div>
+                <h2>Fielding Substitutions</h2>
+                {% if data.substitutions|length == 0 %}
+                <span>None. No substitutions permitted.</span>
+                {% else %}
+                <div class="stat-insight-header">
+                    <div class="stat-insight-insight">Order</div>
+                    <div class="stat-insight-name-heading">Player</div>
+                </div>
+                <hr class="stat-hr" />
+                {% for i in data.substitutions %}
+                <div class="stat-insight-body">
+                    <div class="stat-insight-insight">
+                        Substitute {{ forloop.counter }}
+                    </div>
+                    <div class="player-avatar-div" style="left: 25vw">
+                        <img
+                            class="player-avatar"
+                            src="{% static i.avatar %}"
+                            alt=""
+                        />
+                    </div>
+                    <div class="stat-insight-name">
+                        <a href="/member/{{ i.id }}">
+                            {% if i.player_title.id == "BOT" %}
+                            <span class="rating-bot-title">BOT</span>
+                            {% elif i.player_title.name != "" %}
+                            <span class="rating-player-title"
+                                >{{ i.player_title.id }}</span
+                            >
+                            {% endif %} {{ i.name }}
+                        </a>
+                    </div>
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %} {% endif %}
+            </div>
+            <hr />
+            <div>
+                <h2>Player Replacements</h2>
+                <div class="stat-insight-header">
+                    <div class="stat-insight-insight">Role</div>
+                    <div class="stat-pad"></div>
+                    <div class="stat-insight-name-heading">Player</div>
+                </div>
+                <hr class="stat-hr" />
+                {% for i in data.replacements %}
+                <div class="stat-insight-body">
+                    <div class="stat-insight-insight">{{ i.role }}</div>
+                    <div class="stat-pad"></div>
+                    {% if i.id is not None %}
+                    <div class="player-avatar-div" style="left: 36vw">
+                        <img
+                            class="player-avatar"
+                            src="{% static i.avatar %}"
+                            alt=""
+                        />
+                    </div>
+                    <div class="stat-insight-name">
+                        <a href="/member/{{ i.id }}">
+                            {% if i.player_title.id == "BOT" %}
+                            <span class="rating-bot-title">BOT</span>
+                            {% elif i.player_title.name != "" %}
+                            <span class="rating-player-title"
+                                >{{ i.player_title.id }}</span
+                            >
+                            {% endif %} {{ i.name }}
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="stat-insight-name" style="padding-left: 3.25vw">
+                        None
+                    </div>
+                    {% endif %}
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+                <h3>Notes:</h3>
+                <ol>
+                    <li>
+                        Only replacements mentioned in this list are permitted,
+                        subject to approval by the Match Referee on the advice
+                        of the Proctoring Unit.
+                    </li>
+                    <li>
+                        If there are no replacements (marked as None) or the
+                        replacement in this list is disallowed by the Match
+                        Referee, the team must play in the absence of the
+                        member.
+                    </li>
+                </ol>
+            </div>
+            <hr />
+            <div>
+                <h2>Proctoring Unit Assessment</h2>
+                <ul>
+                    <li>
+                        Integrity Clearance: 
+                        {% if not data.integrity_clearance %}
+                        <span>NO</span>. {{ data.integrity_reason }} {% else %}
+                        <span>YES</span>
+                        {% endif %}
+                    </li>
+                    <li>
+                        Roster Clearance: {% if not data.roster_clearance %}
+                        <span>NO</span>
+                        {{ data.roster_reason }} {% else %}
+                        <span>YES</span>
+                        {% endif %}
+                    </li>
+                    <li>
+                        Digital Signature: [VALIDATED BY THE PROCTORING UNIT]
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </body>
+</html>

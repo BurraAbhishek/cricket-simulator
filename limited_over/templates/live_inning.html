@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+            }
+            #avatar-container {
+                width: 95vw;
+                display: flex;
+                justify-content: center;
+            }
+            table {
+                table-layout: fixed;
+            }
+            .rating {
+                font-size: 1.25em;
+            }
+            img {
+                max-height: 40vh;
+                width: auto;
+            }
+            #member-names {
+                font-size: 1.5em;
+            }
+            /*input, select {
+                font-size: 0.8em;
+            }*/
+        </style>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <h1 class="main-title" id="player-name">{{ title }}</h1>
+        <div class="summary-text">
+            <form action="#" method="post">
+                <table>
+                    <tr>
+                        <th>Over</th>
+                        <td>{{ current_over }}</td>
+                    </tr>
+                    <tr>
+                        <th>Ball</th>
+                        <td>{{ current_ball }}</td>
+                    </tr>
+                    {{ form.as_table }} {% csrf_token %}
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" value="GO" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            {% if next_inning %}
+                <form action="/live/nextinnings" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="NEXT INNINGS" />
+                </form>
+            {% endif %}
+        </div>
+    </body>
+</html>

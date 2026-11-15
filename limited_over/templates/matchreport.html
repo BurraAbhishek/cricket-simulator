@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+        <style>
+            li {
+                padding-bottom: 1vh;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Match Report and Integrity Assessment</h1>
+        {% if data is not None %}
+        <div class="nomination-form summary-text">
+            <div>
+                <h2>Match Details</h2>
+                <div>
+                    <b>Match Name</b>:
+                    <span>{{ data.match_name }}</span>
+                </div>
+                <br />
+            </div>
+            <hr />
+            <div>
+                <h2>Executive Summary</h2>
+                <span>{{ data.executive_summary }}</span>
+            </div>
+            <br />
+            <hr />
+            <div>
+                <h2>Pitch and Outfield assessment</h2>
+                <div>
+                    Pitch: 
+                    <span>
+                        {% if data.pitch >= 90 %}
+                        Very Good
+                        {% elif data.pitch >= 60 %}
+                        Satisfactory
+                        {% elif data.pitch >= 30 %}
+                        Unsatisfactory
+                        {% else %}
+                        Unfit
+                        {% endif %}
+                        <span>({{ data.pitch }}/100)</span>
+                    </span>
+                </div>
+                <br />
+                <div>
+                    Outfield:
+                    <span>
+                        {% if data.outfield >= 60 %}
+                        Satisfactory
+                        {% elif data.outfield >= 30 %}
+                        Unsatisfactory
+                        {% else %}
+                        Unfit
+                        {% endif %}
+                        <span>({{ data.outfield }}/100)</span>
+                    </span>
+                </div>
+                <br />
+            </div>
+            <hr />
+            <div>
+                <h2>Integrity Audit</h2>
+                <ul>
+                    <li>
+                        <b>Player and Match Official Area Sterility</b>:
+                        {% if data.violations.park|length > 0 %}
+                        <ul>
+                            {% for i in data.violations.park %}
+                            <li>
+                                <span>Incident {{ forloop.counter }}</span>
+                                <ul class="sub-ul">
+                                    <li>
+                                        <b>Players Involved: </b>
+                                        {{ i.player_names }}
+                                    </li>
+                                    <li>
+                                        <b>Offence Category: </b>
+                                        {{ i.offence_category }}
+                                    </li>
+                                    <li>
+                                        <b>Factual Account: </b>
+                                        {{ i.factual_account }}
+                                    </li>
+                                    <li>
+                                        <b>Official Action: </b>
+                                        {{ i.official_action }}
+                                    </li>
+                                    <li>
+                                        <b>Proposed Sanction: </b>
+                                        {{ i.proposed_sanction }}
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        100%. The Proctoring Unit confirmed zero unauthorized entries.
+                        {% endif %}
+                    </li>
+                    <li>
+                        <b>Anti-Cheating Unit Report</b>:
+                        {% if data.violations.cheat|length > 0 %}
+                        <ul>
+                            {% for i in data.violations.cheat %}
+                            <li>
+                                <span>Incident {{ forloop.counter }}</span>
+                                <ul class="sub-ul">
+                                    <li>
+                                        <b>Players Involved: </b>
+                                        {{ i.player_names }}
+                                    </li>
+                                    <li>
+                                        <b>Offence Category: </b>
+                                        {{ i.offence_category }}
+                                    </li>
+                                    <li>
+                                        <b>Factual Account: </b>
+                                        {{ i.factual_account }}
+                                    </li>
+                                    <li>
+                                        <b>Official Action: </b>
+                                        {{ i.official_action }}
+                                    </li>
+                                    <li>
+                                        <b>Proposed Sanction: </b>
+                                        {{ i.proposed_sanction }}
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        The Proctoring Unit confirmed no instance of
+                        unauthorized assistance.
+                        {% endif %}
+                    </li>
+                    <li>
+                        <b>Anti-Corruption Unit Report</b>:
+                        {% if data.violations.fixing|length > 0 %}
+                        <ul>
+                            {% for i in data.violations.fixing %}
+                            <li>
+                                <span>Incident {{ forloop.counter }}</span>
+                                <ul class="sub-ul">
+                                    <li>
+                                        <b>Players Involved: </b>
+                                        {{ i.player_names }}
+                                    </li>
+                                    <li>
+                                        <b>Offence Category: </b>
+                                        {{ i.offence_category }}
+                                    </li>
+                                    <li>
+                                        <b>Factual Account: </b>
+                                        {{ i.factual_account }}
+                                    </li>
+                                    <li>
+                                        <b>Official Action: </b>
+                                        {{ i.official_action }}
+                                    </li>
+                                    <li>
+                                        <b>Proposed Sanction: </b>
+                                        {{ i.proposed_sanction }}
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        The Proctoring Unit confirmed no corrupt
+                        activity or attempt to improperly manipulate
+                        the result.
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+            <hr />
+            <div>
+                <h2>Match Referee Audit</h2>
+                <ul>
+                    <li>
+                        <b>Behavior</b>:
+                        {% if data.violations.behavior|length > 0 %}
+                        <ul>
+                            {% for i in data.violations.behavior %}
+                            <li>
+                                <span>Incident {{ forloop.counter }}</span>
+                                <ul class="sub-ul">
+                                    <li>
+                                        <b>Players Involved: </b>
+                                        {{ i.player_names }}
+                                    </li>
+                                    <li>
+                                        <b>Offence Category: </b>
+                                        Level {{ i.offence_level }}
+                                    </li>
+                                    <li>
+                                        <b>Factual Account: </b>
+                                        {{ i.factual_account }}
+                                    </li>
+                                    <li>
+                                        <b>Official Action: </b>
+                                        {{ i.official_action }}
+                                    </li>
+                                    <li>
+                                        <b>Proposed Sanction: </b>
+                                        {{ i.proposed_sanction }}
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        The Proctoring Unit confirmed no misbehavior.
+                        {% endif %}
+                    </li>
+                    <li>
+                        <b>Stop-Clock Compliance</b>:
+                        {% if data.violations.stop_clock|length > 0 %}
+                        <ul>
+                            {% for i in data.violations.stop_clock %}
+                            <li>
+                                <span>Incident {{ forloop.counter }}</span>
+                                <ul class="sub-ul">
+                                    <li>
+                                        <b>Players Involved: </b>
+                                        {{ i.player_names }}
+                                    </li>
+                                    <li>
+                                        <b>Factual Account: </b>
+                                        {{ i.factual_account }}
+                                    </li>
+                                    <li>
+                                        <b>Official Action: </b>
+                                        {{ i.official_action }}
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        No warnings issued. 
+                        All players complied with the stop-clock.
+                        {% endif %}
+                    </li>
+                    <li>
+                        <b>Ball Integrity</b>:
+                        {% if data.violations.ball|length > 0 %}
+                        <ul>
+                            {% for i in data.violations.ball %}
+                            <li>
+                                <span>Incident {{ forloop.counter }}</span>
+                                <ul class="sub-ul">
+                                    <li>
+                                        <b>Players Involved: </b>
+                                        {{ i.player_names }}
+                                    </li>
+                                    <li>
+                                        <b>Offence Category: </b>
+                                        Level {{ i.offence_level }}
+                                    </li>
+                                    <li>
+                                        <b>Factual Account: </b>
+                                        {{ i.factual_account }}
+                                    </li>
+                                    <li>
+                                        <b>Official Action: </b>
+                                        {{ i.official_action }}
+                                    </li>
+                                    <li>
+                                        <b>Proposed Sanction: </b>
+                                        {{ i.proposed_sanction }}
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        The Proctoring Unit confirmed no ball tampering
+                        by any of the players.
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+            <hr />
+            {% if data.violations.summary|length > 0 %}
+            <div>
+                <h2>Venue Integrity</h2>
+                <ul>
+                    <li>
+                        Real-time audits have proven that the venue remained
+                        compliant despite the incidents that led to the
+                        collapse of the integrity of the match.
+                    </li>
+                    <li>
+                        <b>Findings conclude the venue remains compliant.</b>
+                    </li>
+                    <li>
+                        No disciplinary action shall be initiated against the
+                        venue as its infrastructure and security were not at
+                        fault.
+                    </li>
+                </ul>
+            </div>
+            <hr />
+            <div>
+                <h2>Summary of Penalties</h2>
+                <ul>
+                    {% for i in data.violations.summary %}
+                    <li>
+                        <b>{{ i.player_name }}</b>:
+                        {{ i.penalty }} (Level {{ i.offence_level }})
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <hr />
+            {% endif %}
+            {% if data.remarks|length > 0 %}
+            <div>
+                <h2>Other Remarks</h2>
+                <ul>
+                    {% for i in data.remarks %}
+                    <li>
+                        {{ i }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <hr />
+            {% endif %}
+            <div>
+                <h2>Final Result and Signature</h2>
+                <ul>
+                    <li>
+                        Match Integrity Rating:
+                        {% if data.integrity_percent >= 90 %}
+                        Green
+                        {% elif data.integrity_percent >= 70 %}
+                        Amber
+                        {% else %}
+                        Red
+                        {% endif %}
+                        <span>
+                            ({{ data.integrity_percent|floatformat:0 }}/100)
+                        </span>
+                    </li>
+                    <li>
+                        Result:
+                        {% if not data.result_valid %}
+                        INVALIDATED. Both sides lose by forfeit.
+                        {% else %}
+                        VALIDATED. The result stands.
+                        {% endif %}
+                    </li>
+                    <li>
+                        Signature of the Match Referee:
+                        [MATCH_REFEREE_VALIDATED_SIGNATURE]
+                    </li>
+                </ul>
+            </div>
+            <hr />
+        </div>
+        {% endif %}
+    </body>
+</html>

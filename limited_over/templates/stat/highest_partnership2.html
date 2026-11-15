@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .stat-insight-header {
+                display: flex;
+                font-size: 1.3em;
+                font-weight: 700;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-body {
+                display: flex;
+                font-size: 1.2em;
+                padding-top: 0.5vh;
+                padding-bottom: 0.5vh;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-name {
+                padding-left: 1vw;
+                padding-right: 1vw;
+                width: 38vw;
+                text-align: left;
+            }
+            .stat-insight-score0 {
+                padding-left: 1vw;
+                width: 18vw;
+                padding-right: 1vw;
+                text-align: center;
+            }
+            .stat-insight-score1 {
+                padding-left: 21vw;
+                width: 18vw;
+                padding-right: 1vw;
+                text-align: center;
+            }
+            .stat-insight-score2 {
+                padding-left: 1vw;
+                width: 18vw;
+                padding-right: 11vw;
+                text-align: center;
+            }
+            .stat-insight-insight {
+                width: 10vw;
+                text-align: center;
+            }
+            .stat-insight-status {
+                width: 80vw;
+                padding-left: 13.5vw;
+                padding-right: 2.5vw;
+                padding-top: 0.5vh;
+                padding-bottom: 1vh;
+                font-size: 1.1em;
+            }
+            .stat-insight-dismissal {
+                width: 90vw;
+                text-align: left;
+                font-size: 1em;
+            }
+            .stat-hr {
+                color: #999;
+                width: 95vw;
+            }
+            .win {
+                color: #00cc00;
+            }
+            .loss {
+                color: #ff4444;
+            }
+            .tie {
+                color: #cccc33;
+            }
+            .tooltip-container {
+                position: relative;
+            }
+            .tooltip-text {
+                display: none;
+                position: absolute;
+                box-sizing: border-box;
+                padding-top: 1vh;
+                top: 110%;
+                left: 0;
+                word-wrap: break-word;
+            }
+            .tooltip-container:hover .tooltip-text {
+                display: block;
+                position: relative;
+            }
+            a {
+                color: inherit;
+            }
+        </style>
+        {% if settings.team_flag %}
+        <style>
+            .stat-team-name {
+                padding-left: 1%;
+            }
+        </style>
+        {% endif %}
+    </head>
+    <body>
+        <div class="summary-text">
+            <h1>Highest partnerships by wicket</h1>
+            <div class="stat-insight-header">
+                <div class="stat-insight-insight">Wicket</div>
+                <div class="stat-insight-name">Players</div>
+                <div class="stat-insight-score0">Contributions</div>
+                <div class="stat-insight-score0">Total</div>
+            </div>
+            <hr class="stat-hr"/>
+            <div class="batting-stats">
+                {% for i in stat %}
+                <div class="stat-insight-body">
+                    <div class="stat-insight-insight">
+                        {{ i.wicket }}
+                    </div>
+                    <div class="stat-insight-name">
+                        {% if settings.team_flag %}
+                        <div class="stat-team-name">
+                            <span 
+                                class="inline-flag-container" 
+                                style="background-color: {{ i.team_color }};"
+                            >
+                                <img class="inline-flag" src="{% static i.team_flag %}">
+                            </span>
+                            <a href="/member/{{ i.p1 }}">
+                                {% if i.p1_player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p1_player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p1_player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p1_name }}
+                            </a>
+                        </div>
+                        {% else %}
+                        <a href="/member/{{ i.p1 }}">
+                            {% if i.p1_player_title.id == "BOT" %}
+                            <span class="rating-bot-title">BOT</span>
+                            {% elif i.p1_player_title.name != "" %}
+                            <span class="rating-player-title">{{ i.p1_player_title.id }}</span>
+                            {% endif %}
+                            {{ i.p1_name }}
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="stat-insight-score0">
+                        {{ i.p1_runs }}{{ i.p1_suffix }} ({{ i.p1_balls }})
+                    </div>
+                    <div class="stat-insight-score0">
+                        {{ i.runs }}{{ i.suffix }} ({{ i.balls }})
+                    </div>
+                </div>
+                <div class="stat-insight-body">
+                    <div class="stat-insight-insight">&nbsp;</div>
+                    <div class="stat-insight-name">
+                        {% if settings.team_flag %}
+                        <div class="stat-team-name">
+                            <span 
+                                class="inline-flag-container" 
+                                style="background-color: {{ i.team_color }};"
+                            >
+                                <img class="inline-flag" src="{% static i.team_flag %}">
+                            </span>
+                            <a href="/member/{{ i.p2 }}">
+                                {% if i.p2_player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.p2_player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.p2_player_title.id }}</span>
+                                {% endif %}
+                                {{ i.p2_name }}
+                            </a>
+                        </div>
+                        {% else %}
+                        <a href="/member/{{ i.p2 }}">
+                            {% if i.p2_player_title.id == "BOT" %}
+                            <span class="rating-bot-title">BOT</span>
+                            {% elif i.p2_player_title.name != "" %}
+                            <span class="rating-player-title">{{ i.p2_player_title.id }}</span>
+                            {% endif %}
+                            {{ i.p2_name }}
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="stat-insight-score0">
+                        {{ i.p2_runs }}{{ i.p2_suffix }} ({{ i.p2_balls }})
+                    </div>
+                </div>
+                {% if i.extra > 0 %}
+                <div class="stat-insight-body">
+                    <div class="stat-insight-insight">&nbsp;</div>
+                    <div class="stat-insight-name" style="font-style:italic">
+                        Extra runs
+                    </div>
+                    <div class="stat-insight-score0">
+                        +{{ i.extra }}
+                    </div>
+                </div>
+                {% endif %}
+                <div class="stat-insight-status">
+                    <div class="tooltip-container {{ i.result_class }}">
+                        <a href="{{ i.match_link }}">{{ i.match_name }}</a>,
+                        {{ i.innings_position }}
+                        <div class="tooltip-text">
+                            <a href="/team/{{ i.team }}">{{ i.team_name }}</a>
+                            vs. 
+                            <a href="/team/{{ i.opposition }}">{{ i.opposition_name }}</a>
+                            {% if i.result_class == "win" %}
+                            • <a href="/team/{{ i.team }}">{{ i.team_name }}</a>
+                            are victorious
+                            {% elif i.result_class == "loss" %}
+                            • <a href="/team/{{ i.opposition }}">{{ i.opposition_name }}</a>
+                            are victorious
+                            {% elif i.result_class == "tie" %}
+                            • Match Tied
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>
