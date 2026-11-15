@@ -1,0 +1,289 @@
+@font-face {
+    font-family: NotoSans;
+    src: local('NotoSans'), url('/static/font/noto_sans/NotoSans.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: Roboto;
+    src: local('Roboto'), url('/static/font/roboto/Roboto.ttf') format('truetype');
+}
+
+body {
+    font-family: NotoSans, Roboto, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Oxygen, Ubuntu, Cantarell, "Open Sans",
+        "Helvetica Neue", sans-serif;
+    padding: 1% 1%;
+    background-color: #151310;
+    color: #bababa;
+}
+
+input, select, option {
+    font-family: inherit;
+    font-size: 1em;
+    padding: 1% 1%;
+    text-align: center;
+    background-color: #262421;
+    color: #eeeeee;
+    border: 1px solid #888;
+}
+
+textarea {
+    font-family: inherit;
+    font-size: 0.8em;
+    padding: 0.5% 0.5%;
+    background-color: #262421;
+    color: #eeeeee;
+    border: 1px solid #888;
+}
+
+.inline-flag-container {
+    width: 48px;
+    height: 24px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1vw;
+}
+
+.final-flag-container {
+    width: 72px;
+    height: 36px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1vw;
+}
+
+.inline-flag {
+    max-height: 90%;
+}
+
+.medium-flag-container {
+    width: 200px;
+    height: 100px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-flag {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-flag-container {
+    width: 50vw;
+    height: 25vw;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-team-name {
+    text-align: left;
+    padding-left: 10%;
+}
+
+hr {
+    color: #151310
+}
+
+h1 {
+    border-bottom: 2px solid gray;
+}
+
+img {
+    max-width: 90vw;
+}
+
+table,
+th,
+td {
+    border: 1px solid #aaaaaa;
+}
+
+table {
+    margin: 1% 1%;
+    width: 96%;
+    overflow: scroll;
+}
+
+th,
+td {
+    padding: 1% 1%;
+    text-align: center;
+    font-size: 1.3em;
+}
+
+.summary-text {
+    font-size: 1.25em;
+}
+
+.inappropriate-name {
+    color: black;
+}
+
+.match-summary-box {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 90vw;
+    font-size: 1.25em;
+    padding: 1% 2%;
+    margin: 1% 0.5%;
+    background-color: #1d1913;
+    border: 1px solid #2e2a24;
+    color: inherit;
+    text-decoration: none;
+}
+
+.match-summary {
+    width: 99%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5% 0.5%;
+    flex-grow: 1;
+}
+
+.match-summary-left,
+.match-summary-right {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1%;
+    min-width: 30vw;
+}
+
+.match-summary-team {
+    min-width: 4vw;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.match-summary-termination {
+    min-width: 4vw;
+    text-align: center;
+    font-size: 1.25em;
+}
+
+.match-summary-rating {
+    min-width: 4vw;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 375;
+    color: #888;
+}
+
+.match-summary-score {
+    padding: 0 1%;
+    text-align: center;
+    font-size: 2em;
+}
+
+.match-summary-win {
+    background-color: #102010;
+    border: 1px solid #448844;
+}
+
+.match-summary-loss {
+    background-color: #201010;
+    border: 1px solid #884444;
+}
+
+.match-summary-default {
+    border: 1px solid #666666;
+}
+
+a {
+    text-decoration: none;
+    color: #bababa;
+}
+
+.belligerent-list {
+    table-layout: fixed;
+}
+
+.game-won {
+    color: #00cc00;
+}
+
+.game-lost {
+    color: #ff4444;
+}
+
+.rating-gain {
+    color: #62aa24;
+}
+
+.rating-loss {
+    color: #f83333;
+}
+
+.result-tiebreak {
+    padding: 0;
+}
+
+.final-standing-td {
+    font-size: 2em;
+}
+
+li {
+    padding-bottom: 1%;
+}
+
+.player-name {
+    color: #ffff33;
+}
+
+.medal-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.medal {
+    border-radius: 50%;
+    width: 4.5vw;
+    height: 4.5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gold {
+    font-weight: bold;
+    color: #ffd700;
+    border: 4px solid #ffd700;
+    background-color: #775500;
+}
+
+.silver {
+    font-weight: bold;
+    color: #c0c0c0;
+    border: 4px solid #c0c0c0;
+    background-color: #484848;
+}
+
+.bronze {
+    font-weight: bold;
+    color: #cd7f32;
+    border: 4px solid #cd7f32;
+    background-color: #560604;
+}
+
+.rating-player-title {
+    color: #bf811d;
+    font-weight: 700;
+}
+
+.rating-bot-title {
+    color: #ff00ff;
+    font-weight: 700;
+}

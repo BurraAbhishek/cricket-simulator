@@ -1,0 +1,29 @@
+<svg width="400" height="240" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+    <!-- Main Body -->
+    <path d="M40,140 
+             Q80,80 180,80 
+             Q240,80 320,120 
+             L360,110 
+             Q350,130 360,150 
+             L320,140 
+             Q260,180 160,170 
+             Q80,160 40,140 
+             Z" 
+          fill="#0077be" />
+    
+    <!-- Corrected Dorsal Fin (Pointed Up and Slightly Back) -->
+    <path d="M160,82 
+             C175,40 210,50 205,81 
+             Z" 
+          fill="#0077be" />
+    
+    <!-- Detailed Pectoral Fin -->
+    <path d="M120,150 Q110,190 150,164 Z" fill="#005fa3" />
+    
+    <!-- Mouth and Blowhole Details -->
+    <path d="M40,140 Q60,146 90,144" stroke="white" stroke-width="1" fill="none" />
+    <ellipse cx="130" cy="90" rx="4" ry="2" fill="#004a7c" />
+  
+    <!-- Eye -->
+    <circle cx="90" cy="124" r="4" fill="white" />
+</svg>

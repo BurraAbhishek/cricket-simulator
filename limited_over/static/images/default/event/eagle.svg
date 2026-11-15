@@ -1,0 +1,30 @@
+<svg width="400" height="250" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+    <!-- Body & Wings -->
+    <path d="M200,120 Q100,20 10,80 Q60,140 100,160 L140,130 L200,170 L260,130 L300,160 Q340,140 390,80 Q300,20 200,120" fill="#4B3621" />
+    
+    <!-- White Head -->
+    <path d="M175,120 Q175,65 200,65 Q225,65 225,120 L210,145 L200,130 L190,145 Z" fill="#F8F8F8" />
+  
+    <!-- REFINED BEAK & NARES -->
+    
+    <!-- top of the beak -->
+    <ellipse cx="200" cy="110" rx="6" ry="10" fill="#E6C200" />
+
+    <!-- Nares (Nostrils) positioned within the Cere -->
+    <ellipse cx="197" cy="105" rx="1" ry="2" fill="#332200" transform="rotate(15, 197, 105)" />
+    <ellipse cx="203" cy="105" rx="1" ry="2" fill="#332200" transform="rotate(-15, 203, 105)" />
+    
+    <!-- Main Beak Body -->
+    <ellipse cx="200" cy="110" rx="10" ry="2" fill="#E6C200" />
+  
+    <!-- Eyes aligned with the top of the cere -->
+    <g id="eagle_eyes">
+      <path d="M202,98 Q193,88 184,95" fill="none" stroke="#444" stroke-width="2.5" /> 
+      <circle cx="190" cy="103" r="4.5" fill="#FFD700" />
+      <circle cx="190" cy="103" r="1.8" fill="#000" />
+      
+      <path d="M198,98 Q207,88 216,95" fill="none" stroke="#444" stroke-width="2.5" /> 
+      <circle cx="210" cy="103" r="4.5" fill="#FFD700" />
+      <circle cx="210" cy="103" r="1.8" fill="#000" />
+    </g>
+</svg>

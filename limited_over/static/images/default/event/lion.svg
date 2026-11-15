@@ -1,0 +1,44 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Mane Gradient -->
+    <radialGradient id="maneGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="60%" style="stop-color:#63391d" />
+      <stop offset="100%" style="stop-color:#3d2312" />
+    </radialGradient>
+    <!-- Face Gradient (Golden to Light) -->
+    <linearGradient id="faceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4a017" />
+      <stop offset="100%" style="stop-color:#f3e5ab" />
+    </linearGradient>
+  </defs>
+
+  <!-- Mane -->
+  <path d="M200,40 Q250,30 290,60 T350,120 T360,220 T310,320 T200,360 T90,320 T40,220 T50,120 T110,60 T200,40 Z" fill="url(#maneGrad)" />
+
+  <!-- Ears -->
+  <circle cx="140" cy="110" r="25" fill="#63391d" />
+  <circle cx="260" cy="110" r="25" fill="#63391d" />
+
+  <!-- Main Face -->
+  <path d="M200,100 C150,100 130,140 130,220 C130,300 160,330 200,330 C240,330 270,300 270,220 C270,140 250,100 200,100 Z" fill="url(#faceGrad)" />
+
+  <!-- Realistic Lion Eyes -->
+  <g id="lion_eyes">
+    <!-- Left Eye -->
+    <path d="M150,205 Q170,190 190,205 Q170,215 150,205" fill="#000" /> <!-- Black Outline/Eyelid -->
+    <circle cx="170" cy="202" r="6" fill="#ccac00" /> <!-- Amber Iris -->
+    <circle cx="170" cy="202" r="3" fill="#000" /> <!-- Round Pupil -->
+    <path d="M155,218 Q170,223 185,218" stroke="white" stroke-width="2" fill="none" opacity="0.6"/> <!-- White reflective patch -->
+
+    <!-- Right Eye -->
+    <path d="M210,205 Q230,190 250,205 Q230,215 210,205" fill="#000" />
+    <circle cx="230" cy="202" r="6" fill="#ccac00" />
+    <circle cx="230" cy="202" r="3" fill="#000" />
+    <path d="M215,218 Q230,223 245,218" stroke="white" stroke-width="2" fill="none" opacity="0.6"/>
+  </g>
+
+  <!-- Muzzle, Nose & Mouth -->
+  <path d="M170,260 Q200,245 230,260 L220,300 Q200,315 180,300 Z" fill="#3d2312" />
+  <path d="M185,290 L215,290 L200,305 Z" fill="#000" />
+  <path d="M180,315 Q200,325 220,315" stroke="#3d2312" stroke-width="2" fill="none" />
+</svg>

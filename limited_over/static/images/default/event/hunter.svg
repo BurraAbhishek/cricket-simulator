@@ -1,0 +1,23 @@
+<svg width="400" height="400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- 1. The Bow (Large curved arc) -->
+  <path d="M70 20 Q95 50 70 80" fill="none" stroke="#6e4f32" stroke-width="4" stroke-linecap="round" />
+  <!-- Bowstring (straight line showing tension) -->
+  <line x1="70" y1="20" x2="35" y2="50" stroke="#ddd" stroke-width="1" />
+  <line x1="70" y1="80" x2="35" y2="50" stroke="#ddd" stroke-width="1" />
+
+  <!-- 2. The Arrow (Perfectly horizontal for focus) -->
+  <line x1="30" y1="50" x2="85" y2="50" stroke="#2c3e50" stroke-width="2" />
+  <path d="M85 50 L78 47 L78 53 Z" fill="#7f8c8d" /> <!-- Arrowhead -->
+  <path d="M30 47 L35 50 L30 53" fill="#e67e22" /> <!-- Fletching/Feathers -->
+
+  <!-- 3. The Body (Hooded figure in dark tones) -->
+  <path d="M35 35 Q50 30 55 45 L50 85 L30 85 L25 45 Z" fill="#1b4332" /> <!-- Forest Green Tunic -->
+  
+  <!-- 4. The Hood (Defining feature for stealth) -->
+  <path d="M35 35 Q45 25 55 35 L50 45 L35 45 Z" fill="#081c15" />
+  <!-- Shadowed Face -->
+  <path d="M38 38 Q45 35 48 42 L42 42 Z" fill="#2d3436" />
+
+  <!-- 5. The Quiver (On the back) -->
+  <rect x="25" y="45" width="6" height="20" transform="rotate(-20 25 45)" fill="#432818" />
+</svg>

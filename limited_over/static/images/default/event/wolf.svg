@@ -1,0 +1,40 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">  
+    <!-- Define the Linear Gradient -->
+    <defs>
+    <linearGradient id="wolfGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <!-- Darker grey at the top of the head -->
+        <stop offset="0%" style="stop-color:#34495e;stop-opacity:1" /> 
+        <!-- Medium grey for the mid-face -->
+        <stop offset="50%" style="stop-color:#5d6d7e;stop-opacity:1" />
+        <!-- Lighter grey/off-white for the muzzle/chin -->
+        <stop offset="100%" style="stop-color:#ecf0f1;stop-opacity:1" />
+    </linearGradient>
+    </defs>
+
+    <!-- Kite-Shaped Head (Wide Forehead, Blunt Muzzle) -->
+    <path d="M200,80 
+             L260,110 L300,180 
+             L240,300 L160,300 
+             L100,180 L140,110 Z" 
+          fill="url(#wolfGradient)" stroke="#1a252f" stroke-width="4" />
+  
+    <!-- Anatomically Correct Ears (Rounded, Wide Base, Seamless) -->
+    <path d="M125,140 Q100,20 165,100" fill="#2c3e50" stroke="#1a252f" stroke-width="3" fill-opacity="1" />
+    <path d="M275,140 Q300,20 235,100" fill="#2c3e50" stroke="#1a252f" stroke-width="3" fill-opacity="1" />
+  
+    <!-- Large, Slanted Almond Eyes (45-degree set) -->
+    <g transform="rotate(15, 160, 200)">
+      <path d="M140,205 Q160,190 180,205 Q160,215 140,205" fill="#f1c40f" stroke="#1a252f" stroke-width="2" />
+      <circle cx="160" cy="204" r="5" fill="#000" />
+    </g>
+    <g transform="rotate(-15, 240, 200)">
+      <path d="M220,205 Q240,190 260,205 Q240,215 220,205" fill="#f1c40f" stroke="#1a252f" stroke-width="2" />
+      <circle cx="240" cy="204" r="5" fill="#000" />
+    </g>
+  
+    <!-- Large Blunt Nose -->
+    <path d="M185,235 Q200,225 215,235 L210,260 Q200,270 190,260 Z" fill="#000" />
+    
+    <!-- Added Mouth/Jaw Line -->
+    <path d="M180,280 Q200,275 220,280" stroke="#1a252f" stroke-width="1.5" fill="none" />
+</svg>

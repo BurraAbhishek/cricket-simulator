@@ -1,0 +1,19 @@
+<svg width="400" height="500" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Shield Shape (Polygon) -->
+  <polygon points="100,10 160,30 180,100 160,220 100,240 40,220 20,100 40,30" fill="#4285F4" stroke="#DB4437" stroke-width="3"/>
+
+  <!-- Crossed Cricket Bats (Rectangles and Paths) -->
+  <!-- Left Bat -->
+  <rect x="70" y="80" width="10" height="100" fill="#F4B400" transform="rotate(-30 75 130)"/>
+  <path d="M75 180 Q65 190 75 200 Q85 190 75 180 Z" fill="#F4B400" transform="rotate(-30 75 130)"/>
+
+  <!-- Right Bat -->
+  <rect x="120" y="80" width="10" height="100" fill="#F4B400" transform="rotate(30 125 130)"/>
+  <path d="M125 180 Q115 190 125 200 Q135 190 125 180 Z" fill="#F4B400" transform="rotate(30 125 130)"/>
+
+  <!-- Cricket Ball (Circle) -->
+  <circle cx="100" cy="110" r="25" fill="#DB4437" stroke="#FFF" stroke-width="2"/>
+
+  <!-- Team Name Text -->
+  <text x="100" y="60" font-family="Arial, sans-serif" font-size="20" fill="#FFF" text-anchor="middle" font-weight="bold">STRIKERS</text>
+</svg>
