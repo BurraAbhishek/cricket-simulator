@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .summary-text {
+                font-size: 1.3em;
+            }
+            .summary-table {
+                font-size: 0.8em;
+            }
+            td {
+                min-width: 4vw;
+            }
+            .win {
+                color: #00cc00;
+            }
+            .loss {
+                color: #ff4444;
+            }
+            .draw {
+                color: #888833;
+            }
+            .stat-insight-header {
+                display: flex;
+                font-size: 1.3em;
+                font-weight: 700;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-team-name {
+                padding: 0;
+            }
+            .stat-insight-body {
+                display: flex;
+                font-size: 1.2em;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-name {
+                width: 25vw;
+                text-align: left;
+            }
+            .stat-insight-insight {
+                width: 10vw;
+                text-align: center;
+            }
+            .stat-insight-status {
+                width: 75vw;
+                padding-left: 12.5vw;
+                padding-right: 2.5vw;
+                padding-top: 0.5vh;
+                padding-bottom: 1vh;
+                text-align: left;
+                font-size: 1em;
+            }
+            .stat-insight-separator {
+                width: 1vw;
+                color: #888;
+            }
+            .stat-hr {
+                color: #999;
+                width: 95vw;
+            }
+            .tooltip-container {
+                position: relative;
+            }
+            .tooltip-text {
+                display: none;
+                position: absolute;
+                box-sizing: border-box;
+                padding-top: 1vh;
+                top: 110%;
+                left: 0;
+                word-wrap: break-word;
+            }
+            .tooltip-container:hover .tooltip-text {
+                display: block;
+                position: relative;
+            }
+            a {
+                color: inherit;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="summary-text">
+            <h1>{{ title }}</h1>
+            <div class="stat-insight-header">
+                <div class="stat-insight-insight">Rank</div>
+                <div class="stat-insight-name">Team 1</div>
+                <div class="stat-insight-name">Team 2</div>
+                <div class="stat-insight-insight">Score</div>
+                <div class="stat-insight-insight">Wickets</div>
+                <div class="stat-insight-insight">Overs</div>
+            </div>
+            <hr class="stat-hr"/>
+            <div>
+                {% for i in stat %}
+                <div class="stat-insight-body">
+                    <div class="stat-insight-insight">{{ i.rank }}</div>
+                    <div class="stat-insight-name">
+                        {% if settings.team_flag %}
+                        <div class="stat-team-name">
+                            <span 
+                                class="inline-flag-container" 
+                                style="background-color: {{ i.team1_color }};"
+                            >
+                                <img class="inline-flag" src="{% static i.team1_flag %}">
+                            </span>
+                            <a href="/team/{{ i.team1 }}">{{ i.team1_name }}</a>
+                        </div>
+                        {% else %}
+                        <a href="/team/{{ i.team1 }}">{{ i.team1_name }}</a>
+                        {% endif %}
+                    </div>
+                    <div class="stat-insight-name">
+                        {% if settings.team_flag %}
+                        <div class="stat-team-name">
+                            <span 
+                                class="inline-flag-container" 
+                                style="background-color: {{ i.team2_color }};"
+                            >
+                                <img class="inline-flag" src="{% static i.team2_flag %}">
+                            </span>
+                            <a href="/team/{{ i.team2 }}">{{ i.team2_name }}</a>
+                        </div>
+                        {% else %}
+                        <a href="/team/{{ i.team2 }}">{{ i.team2_name }}</a>
+                        {% endif %}
+                    </div>
+                    <div class="stat-insight-insight">
+                        {{ i.score }}
+                    </div>
+                    <div class="stat-insight-insight">
+                        {{ i.wickets }}
+                    </div>
+                    <div class="stat-insight-insight">
+                        {{ i.formatted_overs }}
+                    </div>
+                </div>
+                <div class="stat-insight-status">
+                    <div class="tooltip-container {{ i.result_class }}">
+                        <a href="{{ i.match_link }}">{{ i.match_name }}</a>
+                        {{ i.innings_position }}
+                        {% if i.winner_id != "" %}
+                        <span>
+                            &nbsp;•&nbsp; <a href="/team/{{ i.winner_id }}">{{ i.winner_name }}</a>
+                            are victorious
+                        </span>
+                        {% elif i.tie %}
+                        <span>
+                            &nbsp;•&nbsp; Match Tied
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>

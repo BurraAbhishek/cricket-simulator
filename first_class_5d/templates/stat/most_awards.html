@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .stat-insight-header {
+                display: flex;
+                font-size: 1.3em;
+                font-weight: 700;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-body {
+                display: flex;
+                font-size: 1.2em;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-name {
+                width: 32vw;
+                text-align: left;
+                padding-left: 10.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-name-heading {
+                width: 40vw;
+                text-align: left;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-rank {
+                width: 15vw;
+                text-align: center;
+            }
+            .stat-insight-insight {
+                width: 15vw;
+                text-align: center;
+            }
+            .stat-team-name {
+                padding: 0;
+                font-size: 1.2em;
+            }
+            .stat-insight-status {
+                width: 50vw;
+                padding-left: 28vw;
+                padding-right: 2.5vw;
+                padding-top: 1vh;
+                padding-bottom: 1vh;
+                text-align: left;
+                font-size: 1em;
+            }
+            .stat-insight-separator {
+                width: 1vw;
+                color: #888;
+            }
+            .stat-hr {
+                color: #999;
+                width: 95vw;
+            }
+            .tooltip-container {
+                position: relative;
+            }
+            .tooltip-text {
+                display: none;
+                position: absolute;
+                box-sizing: border-box;
+                padding-top: 1vh;
+                top: 110%;
+                left: 0;
+                word-wrap: break-word;
+            }
+            .tooltip-container:hover .tooltip-text {
+                display: block;
+                position: relative;
+            }
+            a {
+                color: inherit;
+            }
+            .player-avatar-div {
+                position: absolute;
+                left: 20vw;
+                display: flex;
+                height: 5vw;
+                width: 5vw;
+                justify-content: center;
+                align-items: center;
+                margin: 0 1vw;
+            }
+            .player-avatar {
+                max-height: 5vw;
+                max-width: 5vw;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="summary-text">
+            <h1>Most Player of the Match Awards</h1>
+            <div class="stat-insight-header">
+                <div class="stat-insight-rank">Rank</div>
+                <div class="stat-insight-name-heading">Player</div>
+                <div class="stat-insight-insight">Awards</div>
+                <div class="stat-insight-insight">Matches</div>
+            </div>
+            <hr class="stat-hr"/>
+            <div>
+                {% for i in stat %}
+                <div class="stat-insight-body">
+                    <div class="stat-insight-rank">{{ i.rank }}</div>
+                    <div class="player-avatar-div">
+                        <img class="player-avatar" src="{% static i.avatar %}" alt="" />
+                    </div>
+                    <div class="stat-insight-name">
+                        <a href="/member/{{ i.id }}">
+                            {% if i.player_title.id == "BOT" %}
+                            <span class="rating-bot-title">BOT</span>
+                            {% elif i.player_title.name != "" %}
+                            <span class="rating-player-title">{{ i.player_title.id }}</span>
+                            {% endif %}
+                            {{ i.name }}
+                        </a>
+                    </div>
+                    <div class="stat-insight-insight">{{ i.potm }}</div>
+                    <div class="stat-insight-insight">{{ i.matches }}</div>
+                </div>
+                <div class="stat-insight-status">
+                    {% if settings.team_flag %}
+                    <div class="stat-team-name">
+                        <span 
+                            class="inline-flag-container" 
+                            style="background-color: {{ i.team_color }};"
+                        >
+                            <img class="inline-flag" src="{% static i.team_flag %}">
+                        </span>
+                        <a href="/team/{{ i.team_id }}">{{ i.team_name }}</a>
+
+                    </div>
+                    {% else %}
+                    <a href="/team/{{ i.team_id }}">{{ i.team_name }}</a>
+                    {% endif %}
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>

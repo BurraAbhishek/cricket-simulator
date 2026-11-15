@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+            }
+            #avatar-container {
+                width: 95vw;
+                display: flex;
+                justify-content: center;
+            }
+            .rating {
+                font-size: 1.25em;
+            }
+            img {
+                max-height: 40vh;
+                width: auto;
+            }
+            #member-names {
+                font-size: 1.5em;
+            }
+        </style>
+        <title>Live Games</title>
+    </head>
+    <body>
+        <h1 class="main-title" id="player-name">Live Games</h1>
+        <div class="summary-text">
+            Select all games you wish to watch and press GO. All
+            selected games will be played at the same time, live.
+            <form action="#" method="post">
+                <table>
+                    {{ form.as_table }} {% csrf_token %}
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" value="GO" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </body>
+</html>

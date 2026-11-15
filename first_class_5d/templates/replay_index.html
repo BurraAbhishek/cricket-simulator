@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+            }
+            .main-replay {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .main-replay a {
+                padding: 1%;
+                font-size: 1.5em;
+            }
+        </style>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <h1 class="main-title" id="player-name">{{ title }}</h1>
+        <div class="summary-text main-replay">
+            <a href="/replay/next">{{ play_caption }}</a>
+            <a href="/replay/tv">Replay TV</a>
+            <a href="/replay/scorecard/0">Replay Scorecard</a>
+            <a href="/replay/commentary">Replay Commentary</a>
+        </div>
+        {% if replay_automate %}
+            <script>
+                setTimeout(
+                    function () {
+                        window.location.href="/replay/next"
+                    }, {{ replay_interval }}
+                )
+            </script>
+        {% endif %}
+    </body>
+</html>

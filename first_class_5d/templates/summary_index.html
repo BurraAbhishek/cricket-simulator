@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+    </head>
+    <body>
+        {% include "score_main.html" %}
+        <hr />
+        <div class="summary-text">
+            <h2>Export</h2>
+            <ul>
+                <li>
+                    <a href="/matches/{{ clas }}/{{ id }}">
+                        Export Raw Match Data (JSON)
+                    </a>
+                </li>
+            </ul>
+            <h2>Components</h2>
+            <ul>
+                {% if not cancelled %}
+                <li>
+                    <a href="/matchsummary/{{ clas }}/{{ id }}">
+                        View Match Summary
+                    </a>
+                </li>
+                <li>
+                    <a href="/scorecard/{{ clas }}/{{ id }}/0">
+                        View Scorecard
+                    </a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="/commentary/{{ clas }}/{{ id }}">
+                        View Match Commentary (Last session)
+                    </a>
+                </li>
+                {% if True %}
+                <li>
+                    <a href="/commentary/{{ clas }}/{{ id }}/0">
+                        View Entire Match Commentary
+                    </a>
+                </li>
+                {% endif %}
+                {% if not cancelled %}
+                <li>
+                    <a href="/partnerships/{{ clas }}/{{ id }}/0">
+                        View Partnerships
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            {% if not cancelled %}
+            <h2>Match Replay</h2>
+            <ul>
+                <li>
+                    <a href="/replay/{{ clas }}/{{ id }}">
+                        View Full Match Replay
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+            <h2>Evaluation and Legal (Conratingntial)</h2>
+            <ul>
+                {% if not cancelled %}
+                <li>
+                    <a href="/nomination/{{ clas }}/{{ id }}/0">
+                        View Team Rosters as submitted to Match Referee
+                    </a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="/matchreport/{{ clas }}/{{ id }}">
+                        View Final Match Referee Report
+                    </a>
+                </li>
+                {% if not cancelled %}
+                <li>
+                    <a href="/analysis/{{ clas }}/{{ id }}">
+                        View Engine Evaluation
+                    </a>
+                </li>
+                <li>
+                    <a href="/wdl/{{ clas }}/{{ id }}">
+                        View Win-Draw-Loss Evaluation
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </body>
+</html>

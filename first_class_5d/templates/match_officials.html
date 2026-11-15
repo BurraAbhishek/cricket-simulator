@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+            }
+            .lead-auditor-section {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 80px;
+            }
+            .profile-feature {
+                text-align: center;
+                max-width: 800px;
+            }
+            .vector-frame-gold {
+                width: 220px;
+                height: 220px;
+                margin: 0 auto 20px;
+            }
+            .vector-frame-gold img {
+                height: 100%;
+                width: 100%;
+            }
+            .vector-frame-blue {
+                width: 140px;
+                height: 140px;
+                margin: 0 auto 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .vector-frame-blue img {
+                height: 80%;
+                width: 80%;
+            }
+            .officials-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 30px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            .official-card {
+                padding: 25px;
+                text-align: center;
+                background-color: #1e293b;
+                border: 1px solid #334155;
+            }
+        </style>
+        <title>Match Officials</title>
+    </head>
+    <body>
+        <h1 class="main-title">The Match Officials</h1>
+        <section class="lead-auditor-section">
+            <div class="profile-feature">
+                <div class="vector-frame-gold">
+                    <img
+                        src="{% static officials.referee.avatar %}"
+                        alt="Match Referee"
+                    />
+                </div>
+                <div class="profile-details summary-text">
+                    <h2>The Referee: {{ officials.referee.name }}</h2>
+                    <div>
+                        {{ officials.referee.about|linebreaksbr }}
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="officials-grid">
+            {% for umpire in officials.umpires %}
+            <article class="official-card">
+                <div class="vector-frame-blue">
+                    <img
+                        src="{% static umpire.avatar %}"
+                        alt="Match Umpire"
+                    />
+                </div>
+                <div class="card-info">
+                    <h2>{{ umpire.name }}</h2>
+                    <div class="summary-text">
+                        {{ umpire.about|linebreaksbr }}
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+    </body>
+</html>

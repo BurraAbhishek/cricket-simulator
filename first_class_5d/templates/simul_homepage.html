@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+            }
+            #avatar-container {
+                width: 95vw;
+                display: flex;
+                justify-content: center;
+            }
+            .rating {
+                font-size: 1.25em;
+            }
+            img {
+                max-height: 40vh;
+                width: auto;
+            }
+            #member-names {
+                font-size: 1.5em;
+            }
+            .match-summary-box {
+                border-color: #555;
+            }
+            .cheater-visual {
+                width: 80vw;
+                height: 5vh;
+                display: inline-block;
+                position: relative;
+                border: 2px solid orange;
+                margin: 2vh 2vw;
+            }
+            .cheater-evaluation {
+                font-weight: 600;
+            }
+            .white-component {
+                position: absolute;
+                left: 0;
+                background-color: antiquewhite;
+                width: 40vw;
+                height: 5vh;
+                display: inline-block;
+            }
+            .black-component {
+                position: absolute;
+                right: 0;
+                background-color: black;
+                width: 40vw;
+                height: 5vh;
+                display: inline-block;
+            }
+            .zero-component {
+                position: absolute;
+                left: 39.95vw;
+                background-color: brown;
+                border: 1px solid orange;
+                width: 0.1vw;
+                height: 5vh;
+                display: inline-block;
+            }
+            .hidden-details {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                width: 80vw;
+                margin: 0 2vw;
+            }
+            .match-summary-left,
+            .match-summary-right {
+                padding: 0 1vw;
+                width: 38vw;
+            }
+            .game-status {
+                font-weight: 600;
+            }
+        </style>
+        <title>Live Games</title>
+    </head>
+    <body>
+        <h1 class="main-title" id="player-name">
+            <a href="/simul/previous{{ params }}">&lt;</a>
+            Live Feed ({{ clock }})
+            <a href="/simul/next{{ params }}">&gt;</a>
+        </h1>
+        <div class="summary-text">
+            {% for i in data %}
+                <div class="match-summary-box">
+                    <div class="cheater-device">
+                        {% if not hide_evaluation %}
+                        <span class="cheater-evaluation">{{ i.eval.eval_verbose }}</span>
+                        •
+                        <span class="engine-name">{{ i.engine_name }}</span>
+                        •
+                        {% endif %}
+                        <span>{{ i.name }}</span>
+                        •
+                        <span class="game-status">{{ i.status }}</span>
+                    </div>
+                    {% if hide_evaluation %}
+                    <hr />
+                    {% else %}
+                    <div class="cheater-visual">
+                        <span class="white-component" style="width: {{ i.eval.white_width }}"></span>
+                        <span class="black-component" style="width: {{ i.eval.black_width }}"></span>
+                        <span class="zero-component"></span>
+                    </div>
+                    {% endif %}
+                    <div class="hidden-details">
+                        <div class="match-summary-left">
+                            <div>{{ i.data.0.bat }}</div>
+                            {% for j in i.data %}
+                            {% if j.side == 0 %}
+                            {% if j.played %}
+                            <div>
+                                <span>{{ j.score_formatted }}</span>
+                                (<span>{{ j.balls }}</span> ball{% if j.balls != 1 %}s{% endif %})
+                            </div>
+                            {% else %}
+                            <div>&nbsp;</div>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="match-summary-right">
+                            <div>{{ i.data.1.bat }}</div>
+                            {% for j in i.data %}
+                            {% if j.side == 1 %}
+                            {% if j.played %}
+                            <div>
+                                <span>{{ j.score_formatted }}</span>
+                                (<span>{{ j.balls }}</span> ball{% if j.balls != 1 %}s{% endif %})
+                            </div>
+                            {% else %}
+                            <div>&nbsp;</div>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if simul_automate %}
+        <script>
+            setTimeout(
+                function () {
+                    window.location.href="/simul/next{{ params }}"
+                }, {{ simul_interval }}
+            )
+        </script>
+        {% endif %}
+    </body>
+</html>

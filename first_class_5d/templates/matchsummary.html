@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+        <style>
+            th,
+            td {
+                font-size: 1.2em;
+            }
+
+            .brief-summary {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .brief-summary-content {
+                font-weight: 400;
+            }
+
+            .team-score {
+                text-align: center;
+            }
+
+            .avatar-img {
+                max-width: 10vw;
+            }
+
+            .innings-summary {
+                margin-top: 2vh;
+                margin-bottom: 2vh;
+            }
+
+            .batter-text {
+                text-align: left;
+            }
+
+            .bowler-text {
+                text-align: right;
+            }
+            
+            .potm-violated {
+                display: flex;
+                background-color: #551111;
+                color: #EEEEEE;
+                height: 120px;
+                align-items: center;
+                font-size: 1.3em;
+            }
+
+            .potm {
+                border: 1px solid {{ data.potm_color }};
+                color: {{ data.potm_color }};
+                background-color: {{ data.potm_bgcolor }};
+            }
+            .pott {
+                border: 1px solid {{ data.pott_color }};
+                color: {{ data.pott_color }};
+                background-color: {{ data.pott_bgcolor }};
+            }
+        </style>
+    </head>
+    <body>
+        {% include "score_main.html" %}
+        <hr />
+        {% if data.is_final %}
+        <div id="activeonlyiffinal">
+            <div class="match-summary-box brief-summary pott">
+                <div class="match-summary-left" style="width: 200%">
+                    <div class="summary-text">
+                        Player of the Tournament
+                        <div id="player-of-the-tournament-winner">
+                            <a href="/member/{{ data.pott_id }}">
+                                {% if data.pott_player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif data.pott_player_title.name != "" %}
+                                <span class="rating-player-title">{{ data.pott_player_title.id }}</span>
+                                {% endif %}
+                                {{ data.pott_name }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="match-summary-right">
+                    <img
+                        id="pott-avatar"
+                        src="{% static data.pott_avatar %}"
+                        alt="avatar"
+                        height="120px"
+                    />
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if data.potm_forfeit %}
+        <div class="match-summary-box brief-summary potm-violated">
+            <div class="summary-text">
+                Player of the Match award was withheld by the match 
+                officials.
+            </div>
+        </div>
+        {% else %}
+        <div class="match-summary-box brief-summary potm">
+            <div class="match-summary-left" style="width: 200%">
+                <div class="summary-text">
+                    Player of the Match
+                    <div id="player-of-the-match-winner">
+                        <a href="/member/{{ data.potm_id }}">
+                            {% if data.potm_player_title.id == "BOT" %}
+                            <span class="rating-bot-title">BOT</span>
+                            {% elif data.potm_player_title.name != "" %}
+                            <span class="rating-player-title">{{ data.potm_player_title.id }}</span>
+                            {% endif %}
+                            {{ data.potm_name }}
+                        </a>
+                    </div>
+                    <div id="player-of-the-match-contribution">
+                        {{ data.potm_contribution }}
+                    </div>
+                </div>
+            </div>
+            <div class="match-summary-right">
+                <img
+                    id="potm-avatar"
+                    src="{% static data.potm_avatar %}"
+                    alt="avatar"
+                    height="120px"
+                />
+            </div>
+        </div>
+        {% endif %}
+        <hr />
+        {% for i in data.innings %}
+        <div class="paper summary-text">
+            <h2 class="team-score">
+                {{ i.batting_team }} • {{ i.score_string }} • {{ i.ordinal }} 
+            </h2>
+            <div class="brief-summary innings-summary">
+                <div class="match-summary-left">
+                    <div class="match-summary-team">
+                        <img
+                            class="avatar-img"
+                            src="{% static i.bat1.avatar %}"
+                            alt="avatar"
+                        />
+                    </div>
+                    <div>
+                        <div
+                            class="match-summary-termination batter-text"
+                            >
+                            <a href="/member/{{ i.bat1.id }}">
+                                {% if i.bat1.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.bat1.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.bat1.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.bat1.name }}
+                            </a>
+                        </div>
+                        <div
+                            class="match-summary-termination batter-text"
+                        >
+                            {{ i.bat1.runs }}{% if not i.bat1.dismissed %}*
+                            {% endif %}
+                            ({{ i.bat1.balls }})
+                        </div>
+                    </div>
+                </div>
+                <div class="match-summary-right">
+                    <div>
+                        <div
+                            class="match-summary-termination bowler-text"
+                            >
+                            <a href="/member/{{ i.bowl1.id }}">
+                                {% if i.bowl1.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.bowl1.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.bowl1.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.bowl1.name }}
+                            </a>
+                        </div>
+                        <div
+                            class="match-summary-termination bowler-text"
+                        >
+                            {{ i.bowl1.wickets }}/{{ i.bowl1.runs }}
+                            ({{ i.bowl1.overs }})
+                        </div>
+                    </div>
+                    <div class="match-summary-team">
+                        <img
+                            class="avatar-img"
+                            src="{% static i.bowl1.avatar %}"
+                            alt="avatar"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="brief-summary innings-summary">
+                <div class="match-summary-left">
+                    <div class="match-summary-team">
+                        <img
+                            class="avatar-img"
+                            src="{% static i.bat2.avatar %}"
+                            alt="avatar"
+                        />
+                    </div>
+                    <div>
+                        <div
+                            class="match-summary-termination batter-text"
+                            >
+                            <a href="/member/{{ i.bat2.id }}">
+                                {% if i.bat2.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.bat2.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.bat2.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.bat2.name }}
+                            </a>
+                        </div>
+                        <div
+                            class="match-summary-termination batter-text"
+                        >
+                            {{ i.bat2.runs }}{% if not i.bat2.dismissed %}*
+                            {% endif %}
+                            ({{ i.bat2.balls }})
+                        </div>
+                    </div>
+                </div>
+                <div class="match-summary-right">
+                    <div>
+                        <div
+                            class="match-summary-termination bowler-text"
+                            >
+                            <a href="/member/{{ i.bowl2.id }}">
+                                {% if i.bowl2.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.bowl2.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.bowl2.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.bowl2.name }}
+                            </a>
+                        </div>
+                        <div
+                            class="match-summary-termination bowler-text"
+                        >
+                        {% if i.bowl2.active %}
+                            {{ i.bowl2.wickets }}/{{ i.bowl2.runs }}
+                            ({{ i.bowl2.overs }})
+                        {% endif %}
+                        </div>
+                    </div>
+                    <div class="match-summary-team">
+                        {% if i.bowl2.active %}
+                        <img
+                            class="avatar-img"
+                            src="{% static i.bowl2.avatar %}"
+                            alt="avatar"
+                        />
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if i.rows > 2 %}
+            <div class="brief-summary innings-summary">
+                <div class="match-summary-left">
+                    <div class="match-summary-team">
+                        {% if i.bat3.active %}
+                        <img
+                            class="avatar-img"
+                            src="{% static i.bat3.avatar %}"
+                            alt="avatar"
+                        />
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div
+                            class="match-summary-termination batter-text"
+                            >
+                            <a href="/member/{{ i.bat3.id }}">
+                                {% if i.bat3.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.bat3.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.bat3.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.bat3.name }}
+                            </a>
+                        </div>
+                        <div
+                            class="match-summary-termination batter-text"
+                        >
+                        {% if i.bat3.active %}
+                            {{ i.bat3.runs }}{% if not i.bat3.dismissed %}*
+                            {% endif %}
+                            ({{ i.bat3.balls }})
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="match-summary-right">
+                    <div>
+                        <div
+                            class="match-summary-termination bowler-text"
+                            >
+                            <a href="/member/{{ i.bowl3.id }}">
+                                {% if i.bowl3.player_title.id == "BOT" %}
+                                <span class="rating-bot-title">BOT</span>
+                                {% elif i.bowl3.player_title.name != "" %}
+                                <span class="rating-player-title">{{ i.bowl3.player_title.id }}</span>
+                                {% endif %}
+                                {{ i.bowl3.name }}
+                            </a>
+                        </div>
+                        <div
+                            class="match-summary-termination bowler-text"
+                        >
+                        {% if i.bowl3.active %}
+                            {{ i.bowl3.wickets }}/{{ i.bowl3.runs }}
+                            ({{ i.bowl3.overs }})
+                        {% endif %}
+                        </div>
+                    </div>
+                    <div class="match-summary-team">
+                        {% if i.bowl3.active %}
+                        <img
+                            class="avatar-img"
+                            src="{% static i.bowl3.avatar %}"
+                            alt="avatar"
+                        />
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <hr />
+        {% endfor %}
+        <div class="summary-text" id="toss-string">
+            {{ toss_string }}
+        </div>
+        <hr />
+    </body>
+</html>

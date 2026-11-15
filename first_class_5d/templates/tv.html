@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>TV</title>
+        {% load static %}
+        <link
+            rel="stylesheet"
+            href="{% static 'readme_dark.css' %}"
+            id="main-stylesheet"
+        />
+        <style>
+            a {
+                color: inherit;
+            }
+            h1 {
+                text-align: center;
+            }
+            .main {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 65vh;
+            }
+            .display-pane {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                height: 30vh;
+            }
+            li {
+                margin-bottom: 1%;
+            }
+            #nextpage-container {
+                text-align: center;
+                padding-bottom: 1vh;
+            }
+            .class-score-placeholder {
+                padding: 2% 2%;
+                font-size: 1.6em;
+                min-width: 5vw;
+            }
+            .class-overs-placeholder {
+                padding: 2% 2%;
+                font-size: 1.15em;
+                min-width: 5vw;
+            }
+            .display-pane-container {
+                min-width: 15vw;
+                font-size: 1.35em;
+                width: fit-content;
+            }
+            .center-text {
+                text-align: center;
+            }
+            .user-score-button {
+                text-align: center;
+                font-size: 2em;
+                margin: 1% 1%;
+                height: 5vw;
+                min-width: 5vw;
+                width: fit-content;
+            }
+            #u_options {
+                flex-flow: column wrap;
+            }
+            .paragraph-text {
+                font-size: 1.75em;
+            }
+            #nextball-indicator {
+                display: flex;
+                font-size: 1.6em;
+            }
+            #u-selection-show {
+                padding-left: 1vw;
+                padding-right: 1vw;
+                color: blue;
+            }
+            .player-details {
+                min-height: 20vh;
+                display: flex;
+                flex-direction: row;
+            }
+            .player-avatar {
+                max-width: 15vw;
+                max-height: 18vh;
+            }
+            .player-avatar-container {
+                height: 18vh;
+                width: 15vw;
+                margin-right: 1vw;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .player-score-details {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                width: 100%;
+            }
+            #visible-target-only {
+                display: none;
+            }
+            .opt-run {
+                background-color: #00ff00;
+            }
+            .opt-w {
+                background-color: #ff0000;
+            }
+            .opt-extra {
+                background-color: aquamarine;
+            }
+            .inning-scores {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .inning-scores-body {
+                min-width: 40vw;
+            }
+            #game-result-box,
+            #game-widget-box {
+                display: none;
+            }
+            .bat-style {
+                color: {{ team1.light }};
+                border-color: {{ team1.light }};
+                background-color: {{ team1.dark }};
+            }
+            .bowl-style {
+                color: {{ team2.light }};
+                border-color: {{ team2.light }};
+                background-color: {{ team2.dark }};
+            }
+            .noplayer-style {
+                color: #ccc;
+                border-color: #ccc;
+                background-color: #121212;
+            }
+            #batter-1-placeholder,
+            #batter-2-placeholder,
+            #bowler-name-placeholder {
+                display: block;
+                width: 25vw;
+                font-size: 0.9em;
+                overflow-x: auto;
+            }
+            .separator-placeholder {
+                font-size: 0.2em;
+            }
+            .over-ball {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                border: 2px solid;
+                border-radius: 50%;
+                width: 2.5rem;
+                height: 2.5rem;
+                font-weight: 600;
+                font-size: 0.9em;
+                line-height: 1;
+            }
+            .six {
+                background-color: #0066cc;
+                color: #fff;
+                border-color: #0088ff;
+            }
+            .four {
+                background-color: #008800;
+                color: #fff;
+                border-color: #00cc00;
+            }
+            .out {
+                background-color: #cc0000;
+                color: #fff;
+                border-color: #ff0000;
+            }
+            .extra {
+                background-color: #f0f000;
+                color: #333333;
+                border-color: #ffff00;
+            }
+            .run {
+                background-color: #444;
+                color: #fff;
+                border-color: #ccc;
+            }
+            .player-all-detail {
+                display: none;
+            }
+        </style>
+        {% if tv_widgets %}
+        <style>
+            .player-type:hover .player-all-detail {
+                position: absolute;
+                display: flex;
+                bottom: 33vh;
+                left: 0.5vw;
+                height: 29.5vh;
+                width: 94.75vw;
+            }
+            .player-all-data {
+                display: block;
+            }
+            .display-pane-avatar {
+                min-width: 22vw;
+            }
+            .display-pane-data {
+                max-width: 72vw;
+            }
+            .thisover {
+                font-size: 0.9rem;
+                width: 70vw;
+                height: 3rem;
+                white-space: nowrap;
+                overflow-x: auto;
+                padding-top: 0.75vh;
+            }
+            .display-pane-image {
+                max-height: 20vh;
+                max-width: 20vw;
+                margin-right: 5vw;
+            }
+            .overview-batter-name {
+                font-size: 1.75em;
+                text-align: left;
+                letter-spacing: 1px;
+                margin-bottom: 1vh;
+            }
+            .overview-batter-status {
+                font-size: 1.2em;
+                text-align: left;
+                width: 70vw;
+                letter-spacing: 1px;
+                margin-bottom: 1vh;
+            }
+            .overview-batter-summary {
+                display: flex;
+                justify-content: space-evenly;
+                width: 70vw;
+                font-size: 1.2em;
+                margin-bottom: 1vh;
+            }
+        </style>
+        {% endif %}
+        {% if evaluation is not None and not gameover %}
+        <style>
+            .detail-eval {
+                display: none;
+            }
+            .base-eval:hover .detail-eval {
+                position: absolute;
+                display: block;
+                bottom: 33vh;
+                left: 0.5vw;
+                height: 20vh;
+                width: 94.75vw;
+            }
+            .cheating-table {
+                table-layout: fixed;
+                width: 100%;
+                padding-top: 1vh
+            }
+            .cheating-table th, td {
+                border: none
+            }
+        </style>
+        {% endif %}
+    </head>
+    <body>
+        <div class="main">
+            <div class="paper red-notification bat-style" onclick="javascript:showResult();">
+                <span class="paragraph-text" id="nextball-indicator">
+                    <span id="bowling-team-name">{{ team2.name }}</span>
+                    &nbsp;vs.&nbsp;
+                    <span id="batting-team-name">{{ team1.name }}</span>
+                    &nbsp; •&nbsp; Run rate:&nbsp;
+                    <span id="batting-runrate-placeholder">
+                        {{ run_rate|floatformat:2 }}
+                    </span>
+                    {% if chasing %}
+                    <span id="runrate-chase-placeholder">
+                        &nbsp; •&nbsp;
+                        Target: <span id="target-placeholder">
+                            {{ target }}
+                        </span>
+                        &nbsp;•&nbsp;
+                        <span id="lead-trail-by">
+                            {{ lead_str }}
+                        </span>
+                    </span>
+                    {% else %}
+                    <span id="lead-trail-by">
+                        &nbsp; •&nbsp; {{ lead_str }}
+                    </span>
+                    {% endif %}
+                </span>
+            </div>
+            {% if result_class is not None %}
+            <div class="{{ result_class }}" id="game-result-box">
+                <span class="paragraph-text">
+                    <span>{{ match_name }}</span>
+                    &nbsp;•&nbsp;
+                    {% if evaluation is not None and not gameover %}
+                    <span class="base-eval">
+                        <div style="display: inline-block">{{ match_result }} &nbsp;•&nbsp; Evaluation: <span class="cheater">{{ evaluation.eval_verbose }}</span></div>
+                        <div class="{{ result_class }} detail-eval">
+                            <table class="cheating-table">
+                                <tr>
+                                    {% for j0 in evaluation.components %}
+                                    <td>{{ j0.key }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    {% for j0 in evaluation.components %}
+                                    <td>{{ j0.value|floatformat:1 }}%</td>
+                                    {% endfor %}
+                                </tr>
+                            </table>
+                        </div>
+                    </span>
+                    {% else %}
+                    <span>{{ match_result }}</span>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+            <div class="inning-scores" id="individual-inning-summary">
+                {% for i in c_scores %}
+                <div 
+                    class="paper red-notification inning-scores-body paragraph-text"
+                    style="color: {{ i.light }}; background-color: {{ i.dark }}; border-color: {{ i.light }}"
+                >
+                    {{ i.team }} {% if i.fi == 1 %}1st Innings{% elif i.fi == 2 %}2nd Innings{% endif %}:
+                    {{ i.score }}{% if i.wickets < 10 %}/{{ i.wickets }}{% endif %}{% if i.declared %}d{% endif %}
+                    ({{ i.balls }} ball{% if i.balls != 1 %}s{% endif %})
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="display-pane">
+            <div class="display-pane-container paper red-notification bat-style player-pane">
+                <div class="player-details">
+                    <div class="player-avatar-container">
+                        <img
+                            class="player-avatar"
+                            alt=""
+                            src="{% static bat1.avatar %}"
+                        />
+                    </div>
+                    <div class="player-score-details">
+                        <div class="player-type">
+                            {% if bat1.out %}
+                            OUT
+                            {% else %}
+                            Batting
+                            {% endif %}
+                            {% if tv_widgets %}
+                            <div 
+                                class="display-pane player-all-detail paper red-notification bat-style"
+                                id="bat1-overview-data"
+                            >
+                                <div class="display-pane-avatar">
+                                    {% if bat1.out and bat1.runs == 0 %}
+                                        {% if bat1.balls == 0 %}
+                                        <img class="display-pane-image" alt="Diamond Duck" src="{% static 'images/default/ducks/diamond_duck.png' %}" />
+                                        {% elif bat1.balls == 1 %}
+                                        <img class="display-pane-image" alt="Golden Duck" src="{% static 'images/default/ducks/golden_duck.png' %}" />
+                                        {% else %}
+                                        <img class="display-pane-image" alt="Duck" src="{% static 'images/default/ducks/duck.png' %}" />
+                                        {% endif %}
+                                        {% else %}
+                                    <img class="display-pane-image" alt="" src="{% static bat1.avatar %}" />
+                                    {% endif %}
+                                </div>
+                                <div class="display-pane-data">
+                                    <div class="overview-batter-name">
+                                        {% if bat1.player_title.id == "BOT" %}
+                                        <span class="rating-bot-title">BOT</span>
+                                        {% elif bat1.player_title.name != "" %}
+                                        <span class="rating-player-title">{{ bat1.player_title.id|upper }}</span>
+                                        {% endif %}
+                                        {{ bat1.name|upper }}
+                                        &nbsp;&nbsp;&nbsp;
+                                        <span style="font-weight: 600;">
+                                            {{ bat1.runs }}
+                                        </span>
+                                        <span style="font-weight: 500;">
+                                            ({{ bat1.balls }})
+                                        </span>
+                                    </div>
+                                    <div class="overview-batter-status">
+                                        {% if bat1.out %}
+                                        <span>
+                                            {% for j in bat1.dismissal %}
+                                                {% if j.key == "type" %}
+                                                    <span class="dismissal-type" style="font-weight: 700;">
+                                                        {{ j.value }}
+                                                    </span>
+                                                {% elif j.key == "name" %}
+                                                    <span class="dismissal-player">
+                                                        {{ j.value|upper }}
+                                                    </span>
+                                                    {% if forloop.counter|add:-1 < j|length %}
+                                                    &nbsp;&nbsp;
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        {% else %}
+                                        NOT OUT
+                                        {% endif %}
+                                    </div>
+                                    <div class="separator-placeholder">&nbsp;</div>
+                                    <div class="separator-placeholder">&nbsp;</div>
+                                    <div class="overview-batter-summary">
+                                        <span>DOTS: {{ bat1.scoring.0 }}</span>
+                                        <span>1s: {{ bat1.scoring.1 }}</span>
+                                        <span>2s: {{ bat1.scoring.2 }}</span>
+                                        <span>FOURS: {{ bat1.scoring.4 }}</span>
+                                        <span>SIXES: {{ bat1.scoring.6 }}</span>
+                                        <span>STRIKE RATE: {{ bat1.strikerate|floatformat:1 }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="separator-placeholder">&nbsp;</div>
+                        <div>
+                            Runs:
+                            <span id="batter-1-runs">{{ bat1.runs }}</span>
+                        </div>
+                        <div>
+                            Balls:
+                            <span id="batter-1-balls"> {{ bat1.balls }} </span>
+                        </div>
+                    </div>
+                </div>
+                <span id="batter-1-placeholder">
+                    <a href="/member/{{ bat1.id }}">
+                        {% if bat1.player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif bat1.player_title.name != "" %}
+                        <span class="rating-player-title">{{ bat1.player_title.id }}</span>
+                        {% endif %}
+                        {{ bat1.name }}
+                    </a>
+                </span>
+            </div>
+            <div class="display-pane-container paper red-notification bat-style player-pane">
+                <div class="player-details">
+                    <div class="player-avatar-container">
+                        <img
+                            class="player-avatar"
+                            alt=""
+                            src="{% static bat2.avatar %}"
+                        />
+                    </div>
+                    <div class="player-score-details">
+                        <div class="player-type">
+                            {% if bat2.out %}
+                            OUT
+                            {% else %}
+                            Non-striker
+                            {% endif %}
+                            {% if tv_widgets %}
+                            <div 
+                                class="display-pane player-all-detail paper red-notification bat-style"
+                                id="bat2-overview-data"
+                            >
+                                <div class="display-pane-avatar">
+                                    {% if bat2.out and bat2.runs == 0 %}
+                                        {% if bat2.balls == 0 %}
+                                        <img class="display-pane-image" alt="Diamond Duck" src="{% static 'images/default/ducks/diamond_duck.png' %}" />
+                                        {% elif bat2.balls == 1 %}
+                                        <img class="display-pane-image" alt="Golden Duck" src="{% static 'images/default/ducks/golden_duck.png' %}" />
+                                        {% else %}
+                                        <img class="display-pane-image" alt="Duck" src="{% static 'images/default/ducks/duck.png' %}" />
+                                        {% endif %}
+                                        {% else %}
+                                    <img class="display-pane-image" alt="" src="{% static bat2.avatar %}" />
+                                    {% endif %}
+                                </div>
+                                <div class="display-pane-data">
+                                    <div class="overview-batter-name">
+                                        {% if bat2.player_title.id == "BOT" %}
+                                        <span class="rating-bot-title">BOT</span>
+                                        {% elif bat2.player_title.name != "" %}
+                                        <span class="rating-player-title">{{ bat2.player_title.id|upper }}</span>
+                                        {% endif %}
+                                        {{ bat2.name|upper }}
+                                        &nbsp;&nbsp;&nbsp;
+                                        <span style="font-weight: 600;">
+                                            {{ bat2.runs }}
+                                        </span>
+                                        <span style="font-weight: 500;">
+                                            ({{ bat2.balls }})
+                                        </span>
+                                    </div>
+                                    <div class="overview-batter-status">
+                                        {% if bat2.out %}
+                                        <span>
+                                            {% for j in bat2.dismissal %}
+                                                {% if j.key == "type" %}
+                                                    <span class="dismissal-type" style="font-weight: 700;">
+                                                        {{ j.value }}
+                                                    </span>
+                                                {% elif j.key == "name" %}
+                                                    <span class="dismissal-player">
+                                                        {{ j.value|upper }}
+                                                    </span>
+                                                    {% if forloop.counter|add:-1 < j|length %}
+                                                    &nbsp;&nbsp;
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        {% else %}
+                                        NOT OUT
+                                        {% endif %}
+                                    </div>
+                                    <div class="separator-placeholder">&nbsp;</div>
+                                    <div class="separator-placeholder">&nbsp;</div>
+                                    <div class="overview-batter-summary">
+                                        <span>DOTS: {{ bat2.scoring.0 }}</span>
+                                        <span>1s: {{ bat2.scoring.1 }}</span>
+                                        <span>2s: {{ bat2.scoring.2 }}</span>
+                                        <span>FOURS: {{ bat2.scoring.4 }}</span>
+                                        <span>SIXES: {{ bat2.scoring.6 }}</span>
+                                        <span>STRIKE RATE: {{ bat2.strikerate|floatformat:1 }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="separator-placeholder">&nbsp;</div>
+                        <div>
+                            Runs:
+                            <span id="batter-2-runs">{{ bat2.runs }}</span>
+                        </div>
+                        <div>
+                            Balls:
+                            <span id="batter-2-balls">{{ bat2.balls }}</span>
+                        </div>
+                    </div>
+                </div>
+                <span id="batter-2-placeholder">
+                    <a href="/member/{{ bat2.id }}">
+                        {% if bat2.player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif bat2.player_title.name != "" %}
+                        <span class="rating-player-title">{{ bat2.player_title.id }}</span>
+                        {% endif %}
+                        {{ bat2.name }}
+                    </a>
+                </span>
+            </div>
+            <div
+                class="display-pane-container paper red-notification center-text bat-style scoring-pane"
+            >
+                <span class="class-score-placeholder">
+                    <span>{{ in_runs }}</span>{% if in_wickets < 10 %}/<span
+                        id="wickets-placeholder"
+                    >{{ in_wickets }}</span>
+                    {% endif %}
+                </span>
+                <br />
+                <span class="class-overs-placeholder">
+                    {% if in_overs > 0 %}
+                    <span id="overs-placeholder">{{ in_overs }}</span> 
+                    Over{% if in_overs != 1%}s{% endif %}
+                    {% endif %}
+                    {% if in_balls > 0 %}
+                    <span id="balls-placeholder">{{ in_balls }}</span> 
+                    Ball{% if in_balls != 1%}s{% endif %}
+                    {% endif %}
+                    {% if in_overs == 0 and in_balls == 0 %}
+                    0 Overs
+                    {% endif %}
+                </span>
+            </div>
+            <div class="display-pane-container paper red-notification bowl-style player-pane">
+                <div class="player-details">
+                    <div class="player-avatar-container">
+                        <img class="player-avatar" alt="" src="{% static bowl.avatar %}" />
+                    </div>
+                    <div class="player-score-details">
+                        <div class="player-type">
+                            Bowler
+                            {% if tv_widgets %}
+                            <div 
+                                class="display-pane player-all-detail paper red-notification bowl-style"
+                                id="bowl-overview-data"
+                            >
+                                <div class="display-pane-avatar">
+                                    <img class="display-pane-image" alt="" src="{% static bowl.avatar %}" />
+                                </div>
+                                <div class="display-pane-data">
+                                    <div class="overview-batter-name">
+                                        {% if bowl.player_title.id == "BOT" %}
+                                        <span class="rating-bot-title">BOT</span>
+                                        {% elif bowl.player_title.name != "" %}
+                                        <span class="rating-player-title">{{ bowl.player_title.id|upper }}</span>
+                                        {% endif %}
+                                        {{ bowl.name|upper }}
+                                    </div>
+                                    <div class="overview-batter-summary">
+                                        <span>OVERS: {{ bowl.overs }}</span>
+                                        <span>RUNS: {{ bowl.runs }}</span>
+                                        <span>WICKETS: {{ bowl.wickets }}</span>
+                                        <span>ECONOMY: {{ bowl.economy|floatformat:1 }}</span>
+                                    </div>
+                                    <hr style="color: inherit" />
+                                    <div class="thisover">
+                                        <span class="paragraph-text">
+                                            THIS OVER&nbsp;&nbsp;&nbsp;
+                                            <span>
+                                            {% for j in over_scores %}
+                                                {% if j is None %}
+                                                <span class="over-ball">
+                                                    &nbsp;
+                                                </span>
+                                                {% elif j.score == "0" %}
+                                                <span class="over-ball run">
+                                                    <span style="position: relative; bottom: 0.1em">&#9679;</span>
+                                                </span>
+                                                {% elif j.wicket %}
+                                                <span class="over-ball out">
+                                                    {% if j.score|length > 1 %}
+                                                    <span>&nbsp;</span>
+                                                    <span style="font-size: 0.75em;">{{ j.score }}</span>
+                                                    <span>&nbsp;</span>
+                                                    {% else %}
+                                                    <span>{{ j.score }}</span>
+                                                    {% endif %}
+                                                </span>
+                                                {% elif j.extra %}
+                                                <span class="over-ball extra">
+                                                    <span>&nbsp;</span>
+                                                    <span style="font-size: 0.8em;">{{ j.score }}</span>
+                                                    <span>&nbsp;</span>
+                                                </span>
+                                                {% elif j.six %}
+                                                <span class="over-ball six">
+                                                    <span>{{ j.score }}</span>
+                                                </span>
+                                                {% elif j.four %}
+                                                <span class="over-ball four">
+                                                    <span>{{ j.score }}</span>
+                                                </span>
+                                                {% else %}
+                                                <span class="over-ball run">
+                                                    <span>{{ j.score }}</span>
+                                                </span>
+                                                {% endif %}
+                                            {% endfor %}
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="separator-placeholder">&nbsp;</div>
+                        <div>
+                            <span id="bowler-wickets-placeholder">{{ bowl.wickets }}</span>
+                            -
+                            <span id="bowler-runs-placeholder">{{ bowl.runs }}</span>
+                        </div>
+                        <div>
+                            Overs:
+                            <span id="bowler-overs-placeholder">{{ bowl.overs }}</span>
+                        </div>
+                    </div>
+                </div>
+                <span id="bowler-name-placeholder">
+                    <a href="/member/{{ bowl.id }}">
+                        {% if bowl.player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif bowl.player_title.name != "" %}
+                        <span class="rating-player-title">{{ bowl.player_title.id }}</span>
+                        {% endif %}
+                        {{ bowl.name }}
+                    </a>
+                </span>
+            </div>
+        </div>
+        <script>
+            if (typeof sessionStorage !== "undefined") {
+                if (sessionStorage.getItem("tv_display_pane") == "result") {
+                    document.getElementById("individual-inning-summary").style.display = "none";
+                    if (document.getElementById("game-result-box") !== null) {
+                        document.getElementById("game-result-box").style.display = "block";
+                    }
+                    if (document.getElementById("game-widget-box") !== null) {
+                        document.getElementById("game-widget-box").style.display = "block";
+                    }
+                }
+            }
+            function showResult() {
+                var inning = document.getElementById("individual-inning-summary");
+                if (inning.style.display == "flex") {
+                    inning.style.display = "none";
+                    if (document.getElementById("game-result-box") !== null) {
+                        document.getElementById("game-result-box").style.display = "block";
+                    }
+                    if (document.getElementById("game-widget-box") !== null) {
+                        document.getElementById("game-widget-box").style.display = "block";
+                    }
+                    if (typeof sessionStorage !== "undefined") {
+                        sessionStorage.setItem("tv_display_pane", "result")
+                    }
+                } else {
+                    inning.style.display = "flex";
+                    if (document.getElementById("game-result-box") !== null) {
+                        document.getElementById("game-result-box").style.display = "none";
+                    }
+                    if (document.getElementById("game-widget-box") !== null) {
+                        document.getElementById("game-widget-box").style.display = "none";
+                    }
+                    if (typeof sessionStorage !== "undefined") {
+                        sessionStorage.setItem("tv_display_pane", "data")
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

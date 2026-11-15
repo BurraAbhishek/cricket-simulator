@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+        <style>
+            th,
+            td {
+                font-size: 1.2em;
+            }
+
+            table, th, td {
+                border-color: #999999;
+            }
+
+            .tooltip-container {
+                position: relative;
+            }
+
+            .tooltip-text {
+                display: none;
+                position: absolute;
+                box-sizing: border-box;
+                padding-top: 1vh;
+                text-align: center;
+                top: 110%;
+                left: 0;
+                font-size: 0.8em;
+                word-wrap: break-word;
+            }
+
+            .tooltip-container:hover .tooltip-text {
+                display: block;
+                position: relative;
+            }
+
+            .brief-summary {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .brief-summary-content {
+                font-weight: 400;
+            }
+
+            .innings-button {
+                width: 40vw;
+                font-size: 1.35em;
+                background-color: #3b2d34;
+                text-align: center;
+                color: #dddddd;
+                border: 1px solid #4c3e45;
+                margin: 1% 1%;
+                padding: 1% 1%;
+            }
+            li {
+                padding-bottom: 0.5%;
+            }
+            .dismissal-type {
+                color: #f55;
+            }
+            .dismissal-player {
+                color: #aaa;
+            }
+            .not-out {
+                color: #0d0;
+            }
+            .did-not-bat {
+                color: #cc0
+            }
+
+            .batting-header {
+                display: flex;
+                font-size: 1.3em;
+                font-weight: 700;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+
+            .batter-body {
+                display: flex;
+                font-size: 1.2em;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+
+            .batter-name {
+                width: 40vw;
+                text-align: left;
+            }
+
+            .batter-insight {
+                width: 10vw;
+                text-align: center;
+            }
+
+            .batter-status {
+                width: 90vw;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+                padding-top: 0.5vh;
+                padding-bottom: 1vh;
+                font-size: 1.1em;
+            }
+
+            .batter-dismissal {
+                width: 90vw;
+                text-align: left;
+                font-size: 1em;
+            }
+
+            .stat-hr {
+                color: #999;
+                width: 95vw;
+            }
+
+            .move-a-bit {
+                padding-left: 1vw;
+                padding-right: 1vw;
+            }
+        </style>
+    </head>
+    <body>
+        {% include "score_main.html" %}
+        <hr />
+        <div class="match-summary">
+            {% for i in c %}
+            <a
+                class="innings-button"
+                href="/live/scorecard/{{ i }}"
+            >
+                Innings {{ i }}
+            </a>
+            {% endfor %}
+        </div>
+        <hr />
+        {% if innings >= 0 %}
+        <div class="paper summary-text" id="main-scorecard">
+            <h1>Batting</h1>
+            <div class="batting-header">
+                <div class="batter-name">Batter</div>
+                <div class="batter-insight">Runs</div>
+                <div class="batter-insight">Balls</div>
+                <div class="batter-insight">4s</div>
+                <div class="batter-insight">6s</div>
+                <div class="batter-insight">Strike Rate</div>
+            </div>
+            <hr class="stat-hr" />
+            <div class="batting-stats">
+                {% for i in batter_scorecard %}
+                <div class="batter-body">
+                    <div class="batter-name">
+                        {% if i.dismissed %}
+                            <span class="dismissal-type">
+                                <a href="/member/{{ i.batter_id }}">
+                                    {{ i.batter_name }}
+                                </a>
+                            </span>
+                        {% elif i.runs < 1 and i.balls == 0 %}
+                            <span class="did-not-bat">
+                                <a href="/member/{{ i.batter_id }}">
+                                    {{ i.batter_name }}
+                                </a>
+                            </span>
+                        {% else %}
+                            <span class="not-out">
+                                <a href="/member/{{ i.batter_id }}">
+                                    {{ i.batter_name }}
+                                </a>
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="batter-insight">{{ i.runs }}</div>
+                    <div class="batter-insight">{{ i.balls }}</div>
+                    <div class="batter-insight">{{ i.fours }}</div>
+                    <div class="batter-insight">{{ i.sixes }}</div>
+                    <div class="batter-insight">
+                        {% if i.balls > 0 or i.dismissed %}
+                        {{ i.strike_rate|floatformat:1 }}
+                        {% else %}
+                        <span>-</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="batter-status">
+                    {% if i.dismissed %}
+                    <div class="tooltip-container">
+                        {% for j in i.batter_status %}
+                            {% if j.key == "type" %}
+                                <span class="dismissal-type">
+                                    {{ j.value }}
+                                </span>
+                            {% elif j.key == "name" %}
+                                <span class="dismissal-player">
+                                    {{ j.value }}
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="tooltip-text batter-dismissal">
+                            {{ i.dismissal_comment }}
+                        </div>
+                    </div>
+                {% elif i.runs < 1 and i.balls == 0 %}
+                    <span class="did-not-bat">not out</span>
+                {% else %}
+                    <span class="not-out">not out</span>
+                {% endif %}
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+            </div>
+            <div class="move-a-bit"> 
+                <div class="brief-summary">
+                    <h2>Extras:</h2>
+                    &nbsp;
+                    <h2 class="brief-summary-content" id="summary-extras-h2">
+                        {{ extra_str }}
+                    </h2>
+                </div>
+                <div class="brief-summary">
+                    <h2>Score:</h2>
+                    &nbsp;
+                    <h2 class="brief-summary-content" id="summary-score-h2">
+                        {{ score_string }}
+                    </h2>
+                </div>
+                <h2>Yet to bat: {% if ytb|length == 0 %} - {% endif %}</h2>
+                <div class="summary-text">
+                    {% if ytb|length > 0 %}
+                    <ul id="list-yet-to-bat">
+                        {% for i in ytb %}
+                        <li>
+                            <a href="/member/{{ i.id }}">
+                                {{ i.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="fall-of-wickets">
+                <h2 class="move-a-bit">Fall of wickets</h2>
+                <table class="belligerent-list" id="fow-table">
+                    <tr>
+                        <th>Wicket</th>
+                        {% if fow|length > 0 %}
+                        <th id="fow-w-1" class="tooltip-container">
+                            1
+                            <span class="tooltip-text">{{ fow.0.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-1">1</th>
+                        {% endif %}
+                        {% if fow|length > 1 %}
+                        <th id="fow-w-2" class="tooltip-container">
+                            2
+                            <span class="tooltip-text">{{ fow.1.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-2">2</th>
+                        {% endif %}
+                        {% if fow|length > 2 %}
+                        <th id="fow-w-3" class="tooltip-container">
+                            3
+                            <span class="tooltip-text">{{ fow.2.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-3">3</th>
+                        {% endif %}
+                        {% if fow|length > 3 %}
+                        <th id="fow-w-4" class="tooltip-container">
+                            4
+                            <span class="tooltip-text">{{ fow.3.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-4">4</th>
+                        {% endif %}
+                        {% if fow|length > 4 %}
+                        <th id="fow-w-5" class="tooltip-container">
+                            5
+                            <span class="tooltip-text">{{ fow.4.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-5">5</th>
+                        {% endif %}
+                        {% if fow|length > 5 %}
+                        <th id="fow-w-6" class="tooltip-container">
+                            6
+                            <span class="tooltip-text">{{ fow.5.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-6">6</th>
+                        {% endif %}
+                        {% if fow|length > 6 %}
+                        <th id="fow-w-7" class="tooltip-container">
+                            7
+                            <span class="tooltip-text">{{ fow.6.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-7">7</th>
+                        {% endif %}
+                        {% if fow|length > 7 %}
+                        <th id="fow-w-8" class="tooltip-container">
+                            8
+                            <span class="tooltip-text">{{ fow.7.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-8">8</th>
+                        {% endif %}
+                        {% if fow|length > 8 %}
+                        <th id="fow-w-9" class="tooltip-container">
+                            9
+                            <span class="tooltip-text">{{ fow.8.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-9">9</th>
+                        {% endif %}
+                        {% if fow|length > 9 %}
+                        <th id="fow-w-10" class="tooltip-container">
+                            10
+                            <span class="tooltip-text">{{ fow.9.dismissed_batter }}</span>
+                        </th>
+                        {% else %}
+                        <th id="fow-w-10">10</th>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>Runs</th>
+                        {% if fow|length > 0 %}
+                        <td id="fow-runs-1" class="tooltip-container">
+                            {{ fow.0.score }}
+                            <span class="tooltip-text">{{ fow.0.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-1"></td>
+                        {% endif %}
+                        {% if fow|length > 1 %}
+                        <td id="fow-runs-2" class="tooltip-container">
+                            {{ fow.1.score }}
+                            <span class="tooltip-text">{{ fow.1.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-2"></td>
+                        {% endif %}
+                        {% if fow|length > 2 %}
+                        <td id="fow-runs-3" class="tooltip-container">
+                            {{ fow.2.score }}
+                            <span class="tooltip-text">{{ fow.2.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-3"></td>
+                        {% endif %}
+                        {% if fow|length > 3 %}
+                        <td id="fow-runs-4" class="tooltip-container">
+                            {{ fow.3.score }}
+                            <span class="tooltip-text">{{ fow.3.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-4"></td>
+                        {% endif %}
+                        {% if fow|length > 4 %}
+                        <td id="fow-runs-5" class="tooltip-container">
+                            {{ fow.4.score }}
+                            <span class="tooltip-text">{{ fow.4.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-5"></td>
+                        {% endif %}
+                        {% if fow|length > 5 %}
+                        <td id="fow-runs-6" class="tooltip-container">
+                            {{ fow.5.score }}
+                            <span class="tooltip-text">{{ fow.5.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-6"></td>
+                        {% endif %}
+                        {% if fow|length > 6 %}
+                        <td id="fow-runs-7" class="tooltip-container">
+                            {{ fow.6.score }}
+                            <span class="tooltip-text">{{ fow.6.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-7"></td>
+                        {% endif %}
+                        {% if fow|length > 7 %}
+                        <td id="fow-runs-8" class="tooltip-container">
+                            {{ fow.7.score }}
+                            <span class="tooltip-text">{{ fow.7.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-8"></td>
+                        {% endif %}
+                        {% if fow|length > 8 %}
+                        <td id="fow-runs-9" class="tooltip-container">
+                            {{ fow.8.score }}
+                            <span class="tooltip-text">{{ fow.8.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-9"></td>
+                        {% endif %}
+                        {% if fow|length > 9 %}
+                        <td id="fow-runs-10" class="tooltip-container">
+                            {{ fow.9.score }}
+                            <span class="tooltip-text">{{ fow.9.stage|linebreaksbr }}</span>
+                        </td>
+                        {% else %}
+                        <td id="fow-runs-10"></td>
+                        {% endif %}
+                    </tr>
+                </table>
+            </div>
+            <h1>Bowling</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bowler</th>
+                        <th>Overs</th>
+                        <th>Maidens</th>
+                        <th>Runs</th>
+                        <th>Wickets</th>
+                        <th>Economy</th>
+                    </tr>
+                </thead>
+                <tbody id="bowler-scorecard">
+                    {% for i in bowler_scorecard %}
+                    <tr>
+                        <td>
+                            <a href="/member/{{ i.bowler_id }}">
+                                {{ i.bowler_name }}
+                            </a>
+                        </td>
+                        <td>{{ i.overs }}</td>
+                        <td>{{ i.maidens }}</td>
+                        <td>{{ i.runs }}</td>
+                        <td>{{ i.wickets }}</td>
+                        <td>
+                            {% if i.balls > 0 %}
+                            {{ i.economy|floatformat:1 }}
+                            {% else %}
+                            <span>-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </body>
+</html>

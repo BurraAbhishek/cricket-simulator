@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .summary-text {
+                font-size: 1.3em;
+            }
+            .summary-table {
+                font-size: 0.8em;
+            }
+            td {
+                min-width: 4vw;
+            }
+            .win {
+                color: #00cc00;
+            }
+            .loss {
+                color: #ff4444;
+            }
+            .tie {
+                color: #cccc33;
+            }
+            .stat-insight-header {
+                display: flex;
+                font-size: 1.3em;
+                font-weight: 700;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-body {
+                display: flex;
+                font-size: 1.2em;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-name {
+                width: 40vw;
+                padding-left: 1vw;
+                padding-right: 1vw;
+                text-align: left;
+            }
+            .stat-insight-insight {
+                width: 9vw;
+                text-align: center;
+            }
+            .stat-insight-status {
+                width: 75vw;
+                padding-left: 12.5vw;
+                padding-right: 2.5vw;
+                padding-top: 0.5vh;
+                padding-bottom: 1vh;
+                text-align: left;
+                font-size: 1em;
+            }
+            .stat-insight-separator {
+                width: 1vw;
+                color: #888;
+                text-align: center;
+            }
+            .stat-hr {
+                color: #999;
+                width: 95vw;
+            }
+            .tooltip-container {
+                position: relative;
+            }
+            .tooltip-text {
+                display: none;
+                position: absolute;
+                box-sizing: border-box;
+                padding-top: 1vh;
+                top: 110%;
+                left: 0;
+                word-wrap: break-word;
+            }
+            .tooltip-container:hover .tooltip-text {
+                display: block;
+                position: relative;
+            }
+            a {
+                color: inherit;
+            }
+            .stat-team-name {
+                font-size: 1em;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="summary-text">
+            <h1>Best bowling figures</h1>
+            <div class="stat-insight-header">
+                <div class="stat-insight-insight">Rank</div>
+                <div class="stat-insight-name">Bowler</div>
+                <div class="stat-insight-insight">Overs</div>
+                <div class="stat-insight-separator">-</div>
+                <div class="stat-insight-insight">Maidens</div>
+                <div class="stat-insight-separator">-</div>
+                <div class="stat-insight-insight">Runs</div>
+                <div class="stat-insight-separator">-</div>
+                <div class="stat-insight-insight">Wickets</div>
+            </div>
+            <hr class="stat-hr"/>
+            <div>
+                {% for i in stat %}
+                <div class="stat-insight-body">
+                    <div class="stat-insight-insight">{{ i.rank }}</div>
+                    <div class="stat-insight-name">
+                        {% if settings.team_flag %}
+                        <span class="stat-team-name">
+                            <span
+                                class="inline-flag-container" 
+                                style="background-color: {{ i.team_color }};"
+                            >
+                                <img class="inline-flag" src="{% static i.team_flag %}">
+                            </span>
+                            <span>
+                                <a href="/member/{{ i.id }}">
+                                    {% if i.player_title.id == "BOT" %}
+                                    <span class="rating-bot-title">BOT</span>
+                                    {% elif i.player_title.name != "" %}
+                                    <span class="rating-player-title">{{ i.player_title.id }}</span>
+                                    {% endif %}
+                                    {{ i.bowler_name }}
+                                </a>
+                            </span>
+                        </span>
+                        {% else %}
+                        <a href="/member/{{ i.id }}">
+                            {% if i.player_title.id == "BOT" %}
+                            <span class="rating-bot-title">BOT</span>
+                            {% elif i.player_title.name != "" %}
+                            <span class="rating-player-title">{{ i.player_title.id }}</span>
+                            {% endif %}
+                            {{ i.bowler_name }}
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="stat-insight-insight">{{ i.overs }}</div>
+                    <div class="stat-insight-separator">-</div>
+                    <div class="stat-insight-insight">{{ i.maidens }}</div>
+                    <div class="stat-insight-separator">-</div>
+                    <div class="stat-insight-insight">{{ i.runs }}</div>
+                    <div class="stat-insight-separator">-</div>
+                    <div class="stat-insight-insight">{{ i.wickets }}</div>
+                </div>
+                <div class="stat-insight-status">
+                    <div class="tooltip-container {{ i.result_class }}">
+                        <a href="{{ i.match_link }}">{{ i.match_name }}</a>, 
+                        {{ i.innings_position }}
+                        <div class="tooltip-text">
+                            <a href="/team/{{ i.team_id }}">{{ i.team_name }}</a>
+                            vs. 
+                            <a href="/team/{{ i.opposition }}">{{ i.opposition_name }}</a>
+                            {% if i.result_class == "win" %}
+                            • <a href="/team/{{ i.team_id }}">{{ i.team_name }}</a>
+                            are victorious
+                            {% elif i.result_class == "loss" %}
+                            • <a href="/team/{{ i.opposition }}">{{ i.opposition_name }}</a>
+                            are victorious
+                            {% elif i.result_class == "tie" %}
+                            • Match Tied
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>

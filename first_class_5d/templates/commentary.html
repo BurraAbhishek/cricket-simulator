@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+        <style>
+            hr {
+                width: 100%;
+            }
+            .over-summary-left,
+            .over-summary-right {
+                width: 44vw;
+                padding: 0 2%;
+            }
+
+            .over-player-stats {
+                width: 40vw;
+            }
+
+            .comment-player-images {
+                max-height: 108px;
+                max-width: 108px;
+            }
+
+            .commentary-milestone-partner {
+                min-width: 320px;
+            }
+
+            .commentary-milestone-team-flag-container {
+                margin-left: 79px;
+                margin-right: 79px;
+            }
+        </style>
+    </head>
+    <body>
+        {% include "score_main.html" %}
+        <hr />
+        <div id="main-commentary">
+            {% for i in commentary %}
+                {% if i.key == ctx.text %}
+                    <div class="summary-text-commentary">
+                        {{ i.value }}
+                    </div>
+                {% elif i.key == ctx.image %}
+                    <div class="summary-text-commentary">
+                        <div class="centered-image">
+                            <img src="{% static i.value %}" />
+                        </div>
+                    </div>
+                {% elif i.key == ctx.over %}
+                <div class="match-summary-box">
+                    <div class="match-summary">
+                        <div class="over-summary-left">
+                            <div class="over-summary-player" style="font-weight: 600;">
+                                End of over <span>{{ i.over }}</span>
+                            </div>
+                            <div class="over-summary-player">
+                                {{ i.over_total }} • {{ i.over_scores }}
+                            </div>
+                        </div>
+                        <div class="over-summary-right">
+                            <div class="over-summary-player" style="font-weight: 600;">
+                                <span>{{ i.batting_team }}</span>
+                                <span>
+                                    <span style="color: #cbcba9">
+                                        {{ i.score }}</span>/<span style="color: #cbcba9;">{{ i.wicket }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="over-summary-player">
+                                RR: {{ i.runrate|floatformat:1 }}
+                                {% if i.chasing %}
+                                • RRR: {{ i.requiredrate }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="match-summary">
+                        <div class="over-summary-left">
+                            <div class="over-player-stats">
+                                <div class="over-summary-player">
+                                    {% if i.batter1.player_title.id == "BOT" %}
+                                    <span class="rating-bot-title">BOT</span>
+                                    {% elif i.batter1.player_title.name != "" %}
+                                    <span class="rating-player-title">{{ i.batter1.player_title.id }}</span>
+                                    {% endif %}
+                                    {{ i.batter1.name }}
+                                </div>
+                                <div class="over-summary-pscore">
+                                    {{ i.batter1.runs }} ({{ i.batter1.balls }})
+                                </div>
+                            </div>
+                            {% if i.batter2_enabled %}
+                                <div class="over-player-stats">
+                                    <div class="over-summary-player">
+                                        {% if i.batter2.player_title.id == "BOT" %}
+                                        <span class="rating-bot-title">BOT</span>
+                                        {% elif i.batter2.player_title.name != "" %}
+                                        <span class="rating-player-title">{{ i.batter2.player_title.id }}</span>
+                                        {% endif %}
+                                        {{ i.batter2.name }}
+                                    </div>
+                                    <div class="over-summary-pscore">
+                                        {{ i.batter2.runs }} ({{ i.batter2.balls }})
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="over-summary-right">
+                            <div class="over-player-stats">
+                                <div class="over-summary-player">
+                                    {% if i.bowler_title.id == "BOT" %}
+                                    <span class="rating-bot-title">BOT</span>
+                                    {% elif i.bowler_title.name != "" %}
+                                    <span class="rating-player-title">{{ i.bowler_title.id }}</span>
+                                    {% endif %}
+                                    {{ i.bowler_name }}
+                                </div>
+                                <div class="over-summary-pscore">
+                                    {{ i.bowler_wickets }}/{{ i.bowler_runs }} 
+                                    ({{ i.bowler_overs }})
+                                </div>
+                            </div>
+                            {% if i.batter2_enabled %}
+                                <div class="over-player-stats">
+                                    <div class="over-summary-player">
+                                        &nbsp;
+                                    </div>
+                                    <div class="over-summary-pscore"></div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% elif i.key == ctx.ball %}
+                    {% if i.milestones|length > 0 %}
+                    <div class="commentary-milestone-outer-box">
+                        {% for j in i.milestones %}
+                            <div 
+                                class="commentary-milestone-inner-box"
+                                style="background-color: {{ j.color }}"
+                            >
+                                {% if j.type == "team" %}
+                                <div class="commentary-milestone-text">
+                                    <span style="font-size: 1.5em; font-weight: 500;">
+                                        {{ j.title }}
+                                    </span>
+                                    <span style="font-size: 1.2em;">
+                                        {{ j.team }} 
+                                        <span style="color: #cbcba9">{{ j.score }}</span>
+                                    </span>
+                                </div>
+                                <span 
+                                    class="commentary-milestone-team-flag-container"
+                                    style="background-color: {{ j.flag_color }}"
+                                >
+                                    <img class="inline-flag" src="{% static j.flag %}">
+                                </span>
+                                {% elif j.type == "stand" %}
+                                <div class="commentary-milestone-text">
+                                    <span style="font-size: 1.5em; font-weight: 500;">
+                                        {{ j.title }}
+                                    </span>
+                                    <span style="font-size: 1.2em;">
+                                        {% if j.p1_player_title.id == "BOT" %}
+                                        <span class="rating-bot-title">BOT</span>
+                                        {% elif j.p1_player_title.name != "" %}
+                                        <span class="rating-player-title">{{ j.p1_player_title.id }}</span>
+                                        {% endif %}
+                                        {{ j.p1 }} 
+                                        <span style="color: #cbcba9">{{ j.p1_runs }}</span>
+                                    </span>
+                                    <span style="font-size: 1.2em;">
+                                        {% if j.p2_player_title.id == "BOT" %}
+                                        <span class="rating-bot-title">BOT</span>
+                                        {% elif j.p2_player_title.name != "" %}
+                                        <span class="rating-player-title">{{ j.p2_player_title.id }}</span>
+                                        {% endif %}
+                                        {{ j.p2 }} 
+                                        <span style="color: #cbcba9">{{ j.p2_runs }}</span>
+                                    </span>
+                                </div>
+                                <span 
+                                    class="commentary-milestone-partner"
+                                >
+                                    <img class="comment-player-images" src="{% static j.p1_avatar %}">
+                                    <img class="comment-player-images" src="{% static j.p2_avatar %}">
+                                </span>
+                                {% elif j.type == "batter" %}
+                                <div class="commentary-milestone-text" style="min-height: 120px;">
+                                    <span style="font-size: 1.5em; font-weight: 500;">
+                                        {{ j.title }}
+                                    </span>
+                                    <span style="font-size: 1.2em;">
+                                        {% if j.player_title.id == "BOT" %}
+                                        <span class="rating-bot-title">BOT</span>
+                                        {% elif j.player_title.name != "" %}
+                                        <span class="rating-player-title">{{ j.player_title.id }}</span>
+                                        {% endif %}
+                                        {{ j.name }} 
+                                        <span style="color: #cbcba9">{{ j.score }}</span>
+                                    </span>
+                                </div>
+                                <span 
+                                    class="commentary-milestone-partner"
+                                >
+                                    <img class="comment-player-images" src="{% static j.avatar %}">
+                                </span>
+                                {% elif j.type == "bowler" %}
+                                <div class="commentary-milestone-text" style="min-height: 120px;">
+                                    <span style="font-size: 1.5em; font-weight: 500;">
+                                        {{ j.title }}
+                                    </span>
+                                    <span style="font-size: 1.2em;">
+                                        {% if j.player_title.id == "BOT" %}
+                                        <span class="rating-bot-title">BOT</span>
+                                        {% elif j.player_title.name != "" %}
+                                        <span class="rating-player-title">{{ j.player_title.id }}</span>
+                                        {% endif %}
+                                        {{ j.name }} 
+                                        <span style="color: #cbcba9">{{ j.subtitle }}</span>
+                                    </span>
+                                </div>
+                                <span 
+                                    class="commentary-milestone-partner"
+                                >
+                                    <img class="comment-player-images" src="{% static j.avatar %}">
+                                </span>
+                                {% elif j.type == "wicket" %}
+                                <div class="commentary-milestone-text" style="min-height: 120px;">
+                                    <span style="font-size: 1.5em; font-weight: 500;">
+                                        {{ j.title }}
+                                    </span>
+                                    <span style="font-size: 0.1em;">&nbsp;</span>
+                                    <span style="font-size: 1.2em;">
+                                        {% if j.player_title.id == "BOT" %}
+                                        <span class="rating-bot-title">BOT</span>
+                                        {% elif j.player_title.name != "" %}
+                                        <span class="rating-player-title">{{ j.player_title.id }}</span>
+                                        {% endif %}
+                                        {{ j.batter }} 
+                                        <span style="color: #cbcba9">{{ j.batter_score }}</span>
+                                    </span>
+                                    <span style="font-size: 0.4em;">&nbsp;</span>
+                                    <span style="font-size: 1.1em;">
+                                        {% for k in j.dismissal %}
+                                            {% if k.key == "type" %}
+                                                <span>
+                                                    {{ k.value }}
+                                                </span>
+                                            {% elif k.key == "name" %}
+                                                <span style="color: #cba9a9">
+                                                    {{ k.value }}
+                                                </span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                                <span 
+                                    class="commentary-milestone-partner"
+                                >
+                                    <img class="comment-player-images" src="{% static j.avatar %}">
+                                </span>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        <div class="match-commentary-box">
+                            {% if i.six %}
+                            <div class="commentary-ball-outcome six">
+                                {{ i.score }}
+                            </div>
+                            {% elif i.four %}
+                            <div class="commentary-ball-outcome four">
+                                {{ i.score }}
+                            </div>
+                            {% elif i.score == "1+W" or i.score == "2+W" %}
+                            <div class="commentary-ball-outcome out" style="font-size: 1.2em;">
+                                {{ i.score }}
+                            </div>
+                            {% elif i.wicket %}
+                            <div class="commentary-ball-outcome out">
+                                {{ i.score }}
+                            </div>
+                            {% elif i.extra %}
+                            <div class="commentary-ball-outcome extra">
+                                {{ i.score }}
+                            </div>
+                            {% else %}
+                            <div class="commentary-ball-outcome runs">
+                                {{ i.score }}
+                            </div>
+                            {% endif %}
+                            <div class="commentary-ball-comment">
+                                {{ i.value }}
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="match-commentary-box">
+                        {% if i.six %}
+                        <div class="commentary-ball-outcome six">
+                            {{ i.score }}
+                        </div>
+                        {% elif i.four %}
+                        <div class="commentary-ball-outcome four">
+                            {{ i.score }}
+                        </div>
+                        {% elif i.score == "1+W" or i.score == "2+W" %}
+                        <div class="commentary-ball-outcome out" style="font-size: 1.2em;">
+                            {{ i.score }}
+                        </div>
+                        {% elif i.wicket %}
+                        <div class="commentary-ball-outcome out">
+                            {{ i.score }}
+                        </div>
+                        {% elif i.extra %}
+                        <div class="commentary-ball-outcome extra">
+                            {{ i.score }}
+                        </div>
+                        {% else %}
+                        <div class="commentary-ball-outcome runs">
+                            {{ i.score }}
+                        </div>
+                        {% endif %}
+                        <div class="commentary-ball-comment">
+                            {{ i.value }}
+                        </div>
+                    </div> 
+                    {% endif %}               
+                {% endif %}
+            {% endfor %}
+        </div>
+    </body>
+</html>

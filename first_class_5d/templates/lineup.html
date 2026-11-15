@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+                text-decoration: none;
+            }
+            .lineup-type {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.5vh 0.5vw;
+            }
+            .profile {
+                width: 15vw;
+                margin: 0.5vh 0.25vw;
+                padding: 0.5vh 0.25vw;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                border: 1px solid #888;
+                border-radius: 10%;
+            }
+            .profile-avatar {
+                height: 10vw;
+                width: 10vw;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.5vw 0.5vw;
+            }
+            .profile-picture {
+                max-height: 10vw;
+                max-width: 10vw;
+            }
+            .profile-cats {
+                display: flex;
+                height: 1em;
+                font-size: 2.5em;
+                padding-top: 1vh;
+                align-items: center;
+            }
+            .profile-cats div {
+                padding-left: 0.5vw;
+                padding-right: 0.5vw;
+            }
+            .profile-name {
+                height: 2.5em;
+                font-size: 1.25em;
+                padding-left: 0.5vw;
+                padding-right: 0.5vw;
+            }
+            .profile-rating {
+                font-size: 1.25em;
+            }
+            .profile-hr {
+                width: 13.5vw;
+                color: #3f3f3f;
+            }
+            .compact {
+                margin: 0;
+            }
+        </style>
+        <title>{{ team.name }}</title>
+    </head>
+    <body>
+        {% for i in batting_orders %}
+            <div class="lineup-type">
+                {% for j in i %}
+                <a class="profile" href="/member/{{ j.id }}">
+                    <div class="profile-avatar">
+                        <img class="profile-picture" src="{% static j.approved_avatar %}" alt="" />
+                    </div>
+                    <hr class="profile-hr compact" />
+                    <div class="profile-cats">
+                        {% if j.flight %}
+                        <div>&#x2708;</div>
+                        {% endif %}
+                        {% if j.captain %}
+                        <div>&copy;</div>
+                        {% endif %}
+                        {% if j.wicketkeeper %}
+                        <div>&#129508;</div>
+                        {% endif %}
+                    </div>
+                    <hr class="profile-hr" />
+                    <div class="profile-name">
+                        {{ j.name }}
+                    </div>
+                    <hr class="profile-hr" />
+                    <div class="profile-rating">
+                        {% if j.player_title.id == "BOT" %}
+                        <span class="rating-bot-title">BOT</span>
+                        {% elif j.player_title.name != "" %}
+                        <span class="rating-player-title">{{ j.player_title.id }}</span>
+                        {% endif %}
+                        {{ j.selected_rating }}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </body>
+</html>

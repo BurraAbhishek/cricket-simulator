@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .stat-insight-header {
+                display: flex;
+                font-size: 1.3em;
+                font-weight: 700;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-body {
+                display: flex;
+                font-size: 1.2em;
+                padding-left: 2.5vw;
+                padding-right: 2.5vw;
+            }
+            .stat-insight-insight {
+                width: 8vw;
+                text-align: center;
+            }
+            .stat-team-name {
+                padding: 0;
+                font-size: 1.2em;
+            }
+            .stat-insight-separator {
+                width: 1vw;
+                color: #888;
+            }
+            .stat-hr {
+                color: #999;
+                width: 95vw;
+            }
+            .tooltip-container {
+                position: relative;
+            }
+            .tooltip-text {
+                display: none;
+                position: absolute;
+                box-sizing: border-box;
+                padding-top: 1vh;
+                top: 110%;
+                left: 0;
+                word-wrap: break-word;
+            }
+            .tooltip-container:hover .tooltip-text {
+                display: block;
+                position: relative;
+            }
+            a {
+                color: inherit;
+            }
+            .stat-insight-name {
+                width: 30vw;
+                text-align: left;
+                padding-left: 11.5vw;
+            }
+            .stat-insight-name-heading {
+                width: 35.5vw;
+                text-align: left;
+                padding-left: 3.5vw;
+                padding-right: 2.5vw
+            }
+            .stat-insight-status {
+                width: 65vw;
+                padding-left: 22vw;
+                padding-right: 2.5vw;
+                padding-top: 1vh;
+                padding-bottom: 1vh;
+                text-align: left;
+                font-size: 1em;
+            }
+            .player-avatar-div {
+                position: absolute;
+                left: 14.5vw;
+                display: flex;
+                height: 5vw;
+                width: 5vw;
+                justify-content: center;
+                align-items: center;
+                margin: 0 1vw;
+            }
+            .player-avatar {
+                max-height: 5vw;
+                max-width: 5vw;
+            }
+        </style>
+        {% if settings.team_flag %}
+        <style>
+            .summary-text {font-size: 1.1em;}
+            th {
+                padding: 1% 0.5%;
+            }
+        </style>
+        {% endif %}
+    </head>
+    <body>
+        <div class="summary-text">
+            <h1>
+                {% if title == "average" %}
+                Best bowling averages
+                {% else %}
+                Most Economical Bowlers
+                {% endif %}
+            </h1>
+            <div class="stat-insight-header">
+                <div class="stat-insight-insight">Rank</div>
+                <div class="stat-insight-name-heading">Bowler</div>
+                <div class="stat-insight-insight">
+                    {% if title == "average" %}
+                    Average
+                    {% else %}
+                    Economy
+                    {% endif %}
+                </div>
+                <div class="stat-insight-insight">Wickets</div>
+                <div class="stat-insight-insight">Runs</div>
+                <div class="stat-insight-insight">Balls</div>
+                <div class="stat-insight-insight">Innings</div>
+            </div>
+            <hr class="stat-hr"/>
+            <div>
+                {% for i in stat %}
+                <div class="stat-insight-body">
+                    <div class="stat-insight-insight">{{ i.rank }}</div>
+                    <div class="player-avatar-div">
+                        <img class="player-avatar" src="{% static i.avatar %}" alt="" />
+                    </div>
+                    <div class="stat-insight-name">
+                        <a href="/member/{{ i.id }}">
+                            {% if i.player_title.id == "BOT" %}
+                            <span class="rating-bot-title">BOT</span>
+                            {% elif i.player_title.name != "" %}
+                            <span class="rating-player-title">{{ i.player_title.id }}</span>
+                            {% endif %}
+                            {{ i.name }}
+                        </a>
+                    </div>
+                    <div class="stat-insight-insight">
+                        {% if title == "average" %}
+                            {% if i.wickets == 0 %}
+                            <span>-</span>
+                            {% else %}
+                            {{ i.bowling_average|floatformat:2 }}
+                            {% endif %}
+                        {% else %}
+                            {% if i.balls == 0 %}
+                            <span>-</span>
+                            {% else %}
+                            {{ i.economy|floatformat:2 }}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="stat-insight-insight">{{ i.wickets }}</div>
+                    <div class="stat-insight-insight">{{ i.runs }}</div>
+                    <div class="stat-insight-insight">{{ i.balls }}</div>
+                    <div class="stat-insight-insight">{{ i.matches }}</div>
+                </div>
+                <div class="stat-insight-status">
+                    <div>
+                        {% if settings.team_flag %}
+                        <div class="stat-team-name">
+                            <span 
+                                class="inline-flag-container" 
+                                style="background-color: {{ i.team_color }};"
+                            >
+                                <img class="inline-flag" src="{% static i.team_flag %}">
+                            </span>
+                            <a href="/team/{{ i.team_id }}">
+                                {{ i.team_name }}
+                                {% if settings.show_stat_rating %}
+                                ({{ i.rating }})
+                                {% endif %}
+                            </a>
+
+                        </div>
+                        {% else %}
+                        <a href="/team/{{ i.team_id }}">
+                            {{ i.team_name }}
+                            {% if settings.show_stat_rating %}
+                            ({{ i.rating }})
+                            {% endif %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <hr class="stat-hr" />
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>

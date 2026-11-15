@@ -1,0 +1,211 @@
+{% load static %}
+<style>
+    .match-summary-scoreboard-container-left {
+        display: flex;
+        justify-content: flex-start;
+        padding-left: 2vw;
+        min-width: 28vw;
+    }
+    .match-summary-scoreboard-container-right {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 2vw;
+        min-width: 28vw;
+    }
+    .match-summary-scoreboard {
+        width: fit-content;
+        white-space: nowrap;
+    }
+    .match-summary-insights {
+        top: 130%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+<div id="score-main">
+    <div class="match-summary-box">
+        <div class="match-summary">
+            <div class="match-summary-left">
+                {% if summary.show_flags %}
+                <div class="match-summary-team">
+                    <span class="flag-container" style="background-color: {{ summary.team1_flagcolor }};">
+                        <img class="inline-flag" src="{% static summary.team1_flag %}">
+                    </span>
+                    <span style="font-size: 0.2em;">&nbsp;</span>
+                    <a href="/team/{{ summary.team1_id }}" style="font-size: 0.72em;">
+                        {{ summary.team1_name }}
+                    </a>
+                </div>
+                <div class="match-summary-scoreboard-container-left">
+                    <div class="match-summary-scoreboard">
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-1-score"
+                        >{{ summary.score1 }}</div>
+                        {% if not summary.follow_on or summary.target is None %}
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-3-score"
+                        >{{ summary.score3 }}</div>
+                        {% else %}
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-3-score"
+                        >
+                            {{ summary.score3 }}
+                            {% if summary.target is not None %}
+                            <div class="match-summary-insights">
+                                Target {{ summary.target }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        <div
+                            class="match-summary-termination"
+                            id="pl-team-1-decision"
+                        >{{ summary.decision1 }}</div>
+                    </div>
+                </div>
+                {% else %}
+                <div
+                    class="match-summary-team"
+                >
+                    <a href="/team/{{ summary.team1_id }}">
+                        {{ summary.team1_name }}
+                    </a>
+                </div>
+                <div class="match-summary-scoreboard-container-left">
+                    <div class="match-summary-scoreboard">
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-1-score"
+                        >{{ summary.score1 }}</div>
+                        {% if not summary.follow_on or summary.target is None %}
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-3-score"
+                        >{{ summary.score3 }}</div>
+                        {% else %}
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-3-score"
+                        >
+                            {{ summary.score3 }}
+                            {% if summary.target is not None %}
+                            <div class="match-summary-insights">
+                                Target {{ summary.target }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        <div
+                            class="match-summary-termination"
+                            id="pl-team-1-decision"
+                        >{{ summary.decision1 }}</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="match-summary-right">
+                {% if summary.show_flags %}
+                <div class="match-summary-scoreboard-container-right">
+                    <div class="match-summary-scoreboard">
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-2-score"
+                        >{{ summary.score2 }}</div>
+                        {% if summary.follow_on %}
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-4-score"
+                        >
+                            {{ summary.score4 }}
+                            <div class="match-summary-insights">
+                                Follow-on innings
+                            </div>
+                        </div>
+                        {% else %}
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-4-score"
+                        >
+                            {{ summary.score4 }}
+                            {% if summary.target is not None %}
+                            <div class="match-summary-insights">
+                                Target {{ summary.target }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        <div
+                            class="match-summary-termination"
+                            id="pl-team-2-decision"
+                        >{{ summary.decision2 }}</div>
+                    </div>
+                </div>
+                <div class="match-summary-team">
+                    <span class="flag-container" style="background-color: {{ summary.team2_flagcolor }};">
+                        <img class="inline-flag" src="{% static summary.team2_flag %}">
+                    </span>
+                    <span style="font-size: 0.2em;">&nbsp;</span>
+                    <a href="/team/{{ summary.team2_id }}" style="font-size: 0.72em;">
+                        {{ summary.team2_name }}
+                    </a>
+                </div>
+                {% else %}
+                <div class="match-summary-scoreboard-container-right">
+                    <div class="match-summary-scoreboard">
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-2-score"
+                        >{{ summary.score2 }}</div>
+                        {% if summary.follow_on %}
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-4-score"
+                        >
+                            {{ summary.score4 }}
+                            <div class="match-summary-insights">
+                                Follow-on innings
+                            </div>
+                        </div>
+                        {% else %}
+                        <div
+                            class="match-summary-score"
+                            id="pl-team-4-score"
+                        >
+                            {{ summary.score4 }}
+                            {% if summary.target is not None %}
+                            <div class="match-summary-insights">
+                                Target {{ summary.target }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        <div
+                            class="match-summary-termination"
+                            id="pl-team-2-decision"
+                        >{{ summary.decision2 }}</div>
+                    </div>
+                </div>
+                <div
+                    class="match-summary-team"
+                    id="pl-team-2-name"
+                >
+                    <a href="/team/{{ summary.team2_id }}">
+                        {{ summary.team2_name }}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div
+            class="match-summary-termination-result"
+            id="pl-match-result"
+        >
+            <span style="color: #ffffaa">{{ summary.match_name }}</span>
+            <br />
+            <span style="font-size: 0.9em; color: #aaffaa">{{ summary.win_string }}</span>
+        </div>
+    </div>
+</div>

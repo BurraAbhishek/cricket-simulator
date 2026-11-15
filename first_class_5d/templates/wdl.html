@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'commentary_dark.css' %}" />
+        <script src="{% static 'chartjs/Chart_294.min.js' %}"></script>
+        <style>
+            th,
+            td {
+                font-size: 1.2em;
+            }
+
+            .match-summary-box {
+                background-color: #101010;
+                border: 2px solid #333
+            }
+
+            .brief-summary {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .brief-summary-content {
+                font-weight: 400;
+            }
+
+            .innings-button {
+                width: 40vw;
+                font-size: 1.35em;
+                text-align: center;
+                background-color: #3b2d34;
+                color: #bababa;
+                border: none;
+                margin: 1% 1%;
+                padding: 1% 1%;
+            }
+
+            .partnership-name {
+                font-size: 2.5em;
+                font-weight: 400;
+                text-align: center;
+                padding-top: 1vh;
+                padding-bottom: 1vh;
+                width: 100%;
+            }
+
+            .partnership-element,
+            .partnership-element2 {
+                display: flex;
+                font-size: 1.35em;
+            }
+
+            .partnership-element div {
+                padding-left: 0.5vw;
+                padding-right: 0.5vw;
+            }
+        </style>
+        {% if acpl is not None %}
+        <style>
+            .acpl-analysis {
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                font-size: 1.5em;
+                width: 80vw;
+                padding: 0 9vw;
+            }
+            .acpl-value {
+                font-weight: 600;
+                text-align: center;
+                width: 10vw;
+            }
+            .acpl-key {
+                width: 20vw;
+            }
+            .acpl-separator {
+                width: 20vw;
+                text-align: center;
+            }
+            .acpl-name {
+                font-weight: 700;
+            }
+            .acpl-10 {
+                color: #53b2ea;
+            }
+            .acpl-20 {
+                color: #e69d00;
+            }
+            .acpl-30 {
+                color: #ff5353;
+            }
+            #white-blip {
+                background-color: #aaa;
+                border: 2px solid;
+                border-radius: 50%;
+                font-size: 0.5em;
+                width: 1em;
+                height: 1em;
+                display: inline-block;
+            }
+            #black-blip {
+                background-color: #111;
+                border: 2px solid;
+                border-radius: 50%;
+                font-size: 0.5em;
+                width: 1em;
+                height: 1em;
+                display: inline-block;
+            }
+        </style>
+        {% endif %}
+    </head>
+    <body>
+        {% include "score_main.html" %}
+        <hr />
+        <div>
+            <canvas id="wormGraph"></canvas>
+        </div>
+        {% if acpl is not None %}
+        <div class="acpl-analysis">
+            <div class="acpl-value">
+                <div class="acpl-name"><span id="white-blip">&nbsp;</span></div>
+                {% if acpl.white.inaccuracy > 0 %}
+                <div class="acpl-10">{{ acpl.white.inaccuracy }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                {% if acpl.white.mistake > 0 %}
+                <div class="acpl-20">{{ acpl.white.mistake }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                {% if acpl.white.blunder > 0 %}
+                <div class="acpl-30">{{ acpl.white.blunder }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                <div class="acpl-loss">{{ acpl.white.acpl|floatformat:0 }}</div>
+                <div class="acpl-loss">{{ acpl.white.accuracypercent|floatformat:0 }}%</div>
+            </div>
+            <div class="acpl-key">
+                <div class="acpl-name">{{ acpl.white.name }}</div>
+                {% if acpl.white.inaccuracy > 0 %}
+                <div class="acpl-10">Inaccurac{% if acpl.white.inaccuracy == 1 %}y{% else %}ies{% endif %}</div>
+                {% else %}
+                <div>Inaccuracies</div>
+                {% endif %}
+                {% if acpl.white.mistake > 0 %}
+                <div class="acpl-20">Mistake{% if acpl.white.mistake != 1 %}s{% endif %}</div>
+                {% else %}
+                <div>Mistakes</div>
+                {% endif %}
+                {% if acpl.white.blunder > 0 %}
+                <div class="acpl-30">Blunder{% if acpl.white.blunder != 1 %}s{% endif %}</div>
+                {% else %}
+                <div>Blunders</div>
+                {% endif %}
+                <div class="acpl-loss">Average Loss</div>
+                <div class="acpl-loss">Accuracy</div>
+            </div>
+            <div class="acpl-separator">&nbsp;</div>
+            <div class="acpl-value">
+                <div class="acpl-name"><span id="black-blip">&nbsp;</span></div>
+                {% if acpl.black.inaccuracy > 0 %}
+                <div class="acpl-10">{{ acpl.black.inaccuracy }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                {% if acpl.black.mistake > 0 %}
+                <div class="acpl-20">{{ acpl.black.mistake }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                {% if acpl.black.blunder > 0 %}
+                <div class="acpl-30">{{ acpl.black.blunder }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                <div class="acpl-loss">{{ acpl.black.acpl|floatformat:0 }}</div>
+                <div class="acpl-loss">{{ acpl.black.accuracypercent|floatformat:0 }}%</div>
+            </div>
+            <div class="acpl-key">
+                <div class="acpl-name">{{ acpl.black.name }}</div>
+                {% if acpl.black.inaccuracy > 0 %}
+                <div class="acpl-10">Inaccurac{% if acpl.black.inaccuracy == 1 %}y{% else %}ies{% endif %}</div>
+                {% else %}
+                <div>Inaccuracies</div>
+                {% endif %}
+                {% if acpl.black.mistake > 0 %}
+                <div class="acpl-20">Mistake{% if acpl.black.mistake != 1 %}s{% endif %}</div>
+                {% else %}
+                <div>Mistakes</div>
+                {% endif %}
+                {% if acpl.black.blunder > 0 %}
+                <div class="acpl-30">Blunder{% if acpl.black.blunder != 1 %}s{% endif %}</div>
+                {% else %}
+                <div>Blunders</div>
+                {% endif %}
+                <div class="acpl-loss">Average Loss</div>
+                <div class="acpl-loss">Accuracy</div>
+            </div>
+        </div>
+        {% endif %}
+        {{ worm_labels|json_script:"worm-labels-script" }}
+        {{ worm_data|json_script:"worm-data-script" }}
+        {{ worm_data_all|json_script:"worm-data-all-script" }}
+        {{ kv_store|json_script:"kv-store-script" }}
+        <script>
+            var wormLabels = JSON.parse(document.getElementById('worm-labels-script').textContent);
+            var wormData = JSON.parse(document.getElementById('worm-data-script').textContent);
+            var wormDataAll = JSON.parse(document.getElementById('worm-data-all-script').textContent);
+            var keyValueStore = JSON.parse(document.getElementById('kv-store-script').textContent);
+            var wormChart = new Chart(
+				"wormGraph",
+				{
+					data: {
+						labels: wormLabels,
+						datasets: wormData
+					},
+					options: {
+                        defaultFontFamily: "NotoSans, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+						defaultFontColor: "#999",
+						defaultFontSize: 18,
+						layout: {
+							padding: 80
+						},
+						legend: {
+							display: false
+						},
+						scales: {
+							xAxes: [{
+								ticks: {
+									fontSize: 14,
+									fontColor: "#999",
+                                    fontFamily: "Roboto, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+								},
+                                stacked: true
+							}],
+							yAxes: [{
+								gridLines: {
+									color: "#555"
+								},
+								ticks: {
+									fontSize: 18,
+									fontColor: "#bbb",
+                                    fontFamily: "NotoSans, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+									padding: 0,
+                                    min: 0,
+                                    max: 1
+								},
+                                stacked: true,
+                                barPercentage: 1,
+                                categoryPercentage: 1,
+							}]
+						},
+						tooltips: {
+                            mode: 'index',
+                            intersect: false,
+							titleFontSize: 20,
+							titleFontFamily: "NotoSans",
+                            titleSpacing: 8,
+                            titleMarginBottom: 8,
+							bodyFontSize: 20,
+							bodyFontFamily: "Roboto",
+                            bodySpacing: 16,
+							callbacks: {
+								title: function(tooltipItems, data) {
+									var x = tooltipItems[0].index;
+                                    var s0 = wormDataAll[x]["inning_verbose"];
+                                    var s = "Ball: " + wormDataAll[x]["id"];
+                                    var e = "Evaluation: " + wormDataAll[x]["eval_verbose"];
+                                    if (wormDataAll[x]["id"] == "start") {return [s0, e];}
+                                    return [s0, s, e];
+								},
+								label: function(tooltipItems, data) {
+                                    var x = tooltipItems.index;
+                                    var y1 = " " + keyValueStore["team1name"] + ": " + String(Math.round(1000 * wormDataAll[x]["white"]) / 10) + "%";
+                                    var y2 = " " + keyValueStore["team2name"] + ": " + String(Math.round(1000 * wormDataAll[x]["black"]) / 10) + "%";
+                                    var y3 = " Draw: " + String(Math.round(1000 * wormDataAll[x]["draw"]) / 10) + "%";
+                                    if (tooltipItems.datasetIndex == 0) {
+                                        return y1;
+                                    } else if (tooltipItems.datasetIndex == 1) {
+                                        return y3;
+                                    } else if (tooltipItems.datasetIndex == 2) {
+                                        return y2;
+                                    }
+								}
+							}
+						}
+					}
+				}
+            );
+        </script>
+        <script>
+            function getOverString(balls) {
+                var s = ""
+                if (balls < 6) {
+                    s = String(balls) + " Ball"
+                    if (balls != 1) {
+                        s += "s"
+                    }
+                } else {
+                    var q = Math.floor(balls / 6);
+                    var r = balls % 6;
+                    s = String(q) + " Over"
+                    if (q != 1) {
+                        s += "s"
+                    }
+                    if (r > 0) {
+                        s += " "
+                        s += String(r)
+                        s += " Ball"
+                        if (r > 1) {
+                            s += "s"
+                        }
+                    }
+                }
+                return s;
+            }
+        </script>
+    </body>
+</html>

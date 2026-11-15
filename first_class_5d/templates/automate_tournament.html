@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'summary_dark.css' %}" />
+        <style>
+            .main-title {
+                font-size: 2.5em;
+                text-align: center;
+            }
+            th {
+                font-size: 1.2em;
+                color: #cca;
+                padding: 1% 0;
+            }
+            td {
+                font-size: 1.1em;
+            }
+        </style>
+        <title>Live Tournament</title>
+    </head>
+    <body>
+        <h1 class="main-title" id="player-name">
+            Tournament Player
+        </h1>
+        <h2>
+            Click 
+            <a style="text-decoration: underline;" href="/play/from/0">here</a>
+            to play the entire tournament from scratch.
+        </h2>
+        <div class="summary-text">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Match</th>
+                        <th>Team 1</th>
+                        <th>Team 2</th>
+                        <th colspan="2">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in pairings %}
+                    <tr>
+                        <td>{{ i.index }}</td>
+                        <td>{{ i.id_formatted }}</td>
+                        <td>
+                            {% if settings.team_flag %}
+                            <div class="stat-team-name">
+                                <span 
+                                    class="inline-flag-container" 
+                                    style="background-color: {{ i.team1_color }};"
+                                >
+                                    <img class="inline-flag" src="{% static i.team1_flag %}">
+                                </span>
+                                <a href="/team/{{ i.team1 }}">
+                                    {{ i.team1_name }}
+                                </a>
+                            </div>
+                            {% else %}
+                            <a href="/team/{{ i.team1 }}">
+                                {{ i.team1_name }}
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if settings.team_flag %}
+                            <div class="stat-team-name">
+                                <span 
+                                    class="inline-flag-container" 
+                                    style="background-color: {{ i.team2_color }};"
+                                >
+                                    <img class="inline-flag" src="{% static i.team2_flag %}">
+                                </span>
+                                <a href="/team/{{ i.team2 }}">
+                                    {{ i.team2_name }}
+                                </a>
+                            </div>
+                            {% else %}
+                            <a href="/team/{{ i.team2 }}">
+                                {{ i.team2_name }}
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if params is not None %}
+                            <a href="/play/only/{{ i.index }}?{{ params }}">
+                                Play only
+                            </a>
+                            {% else %}
+                            <a href="/play/only/{{ i.index }}">
+                                Play only
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/play/from/{{ i.index }}">
+                                Play from
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>{{ groupstage_count }}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td colspan="2">
+                            <a href="/play/from/{{ groupstage_count }}">
+                                Play knockouts
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
